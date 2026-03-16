@@ -3,86 +3,97 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RHF Wallet Login</title>
+<title>RHF Wallet - Login</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-body { font-family: 'Inter', sans-serif; background: linear-gradient(to right, #4f46e5, #3b82f6); }
-.login-card { max-width: 400px; margin: 6rem auto; background: white; border-radius: 2rem; padding: 2rem; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background-attachment: fixed;
+  }
+  .card {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(15px);
+    border-radius: 2rem;
+    padding: 40px 30px;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+  }
+  .btn-login {
+    height: 80px;
+    border-radius: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+  }
+  .btn-login:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+  }
 </style>
 </head>
 <body>
 
-<div class="login-card">
-  <h2 class="text-2xl font-bold text-center text-gray-700 mb-6">RHF Wallet Login</h2>
+<div class="card">
+  <h1 class="text-white text-3xl font-bold mb-8">RHF WALLET</h1>
 
-  <!-- USER LOGIN / REGISTER -->
-  <div class="flex flex-col gap-4 mb-6">
-    <button onclick="window.location.href='register-bank.html'" 
-            class="h-20 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-lg">LOGIN / DAFTAR BANK</button>
-    <button onclick="window.location.href='register-wallet.html'" 
-            class="h-20 rounded-2xl bg-green-600 hover:bg-green-700 text-white font-bold text-lg">LOGIN / DAFTAR E-WALLET</button>
+  <button onclick="openLogin()" class="btn-login w-full bg-gradient-to-r from-blue-500 to-indigo-500 text-white mb-5">LOGIN / DAFTAR BANK</button>
+  <button onclick="openLogin()" class="btn-login w-full bg-gradient-to-r from-emerald-500 to-green-500 text-white mb-8">LOGIN / DAFTAR E-WALLET</button>
+
+  <div id="login-form" class="hidden text-left mt-6">
+    <h2 class="text-white text-xl font-semibold mb-4">Masuk</h2>
+    <p class="text-white text-sm mb-2">Nomor Kartu / Nomor HP</p>
+    <input type="tel" id="login-card" placeholder="Contoh: 123456789101112" class="w-full mb-3 px-4 py-3 rounded-xl text-black text-lg">
+    <p class="text-white text-sm mb-2">PIN / Password (6 digit angka)</p>
+    <input type="password" id="login-pin" placeholder="●●●●●●" maxlength="6" class="w-full mb-4 px-4 py-3 rounded-xl text-black text-lg">
+    <button onclick="login()" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white py-3 rounded-xl font-semibold">Masuk</button>
+    <p id="login-error" class="text-red-400 text-sm mt-2 hidden"></p>
   </div>
-
-  <hr class="my-4">
-
-  <!-- ADMIN LOGIN -->
-  <h3 class="text-lg font-semibold text-gray-700 mb-4">Login Admin</h3>
-  <form id="adminLoginForm">
-    <label class="block mb-2 text-gray-600">PIN Admin</label>
-    <input type="password" id="adminPin" placeholder="6 digit angka" maxlength="6"
-           class="w-full border border-gray-300 rounded-xl px-4 py-3 mb-6 text-gray-700" />
-
-    <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-semibold">Login Admin</button>
-  </form>
-
-  <p id="error" class="text-red-500 text-sm mt-4 hidden"></p>
 </div>
 
 <script>
-  // ==========================
-  // ADMIN CONFIG (Rahasia)
-  // ==========================
-  const ADMIN_EMAIL = "gacoruncek73@gmail.com"; // tidak ditampilkan ke user
-  let ADMIN_PIN = "123456"; // PIN default, akan diganti tiap 2 jam
+let adminCard = "123456789101112"; // default kartu admin pertama kali
+let adminPin = "848586";           // PIN rahasia admin
 
-  // Ganti PIN tiap 2 jam, hanya admin
-  setInterval(() => {
-    ADMIN_PIN = Math.floor(100000 + Math.random() * 900000).toString();
-    console.log("PIN admin baru (2 jam):", ADMIN_PIN);
-    if(sessionStorage.getItem("admin_logged_in") === "true"){
-        alert("PIN admin baru telah diterbitkan. Sesi admin lama logout.");
-        sessionStorage.removeItem("admin_logged_in");
-    }
-  }, 2 * 60 * 60 * 1000); // 2 jam
+function openLogin() {
+  document.getElementById('login-form').classList.remove('hidden');
+}
 
-  // ==========================
-  // ADMIN LOGIN
-  // ==========================
-  document.getElementById("adminLoginForm").addEventListener("submit", function(e){
-    e.preventDefault();
-    const pin = document.getElementById("adminPin").value;
-    const pinRegex = /^[0-9]{6}$/;
+function login() {
+  const card = document.getElementById('login-card').value.trim();
+  const pin = document.getElementById('login-pin').value.trim();
+  const error = document.getElementById('login-error');
 
-    if(!pinRegex.test(pin)){
-      showError("PIN hanya boleh angka dan harus 6 digit");
-      return;
-    }
-
-    // Login hanya jika PIN cocok
-    if(pin === ADMIN_PIN){
-      sessionStorage.setItem("admin_logged_in","true");
-      alert("Login Admin berhasil!");
-      window.location.href = "admin.html";
-    } else {
-      showError("PIN salah");
-    }
-  });
-
-  function showError(msg){
-    const el = document.getElementById("error");
-    el.textContent = msg;
-    el.classList.remove("hidden");
+  if (!card || !pin) {
+    error.textContent = "Semua field harus diisi";
+    error.classList.remove('hidden');
+    return;
   }
+  if (!/^\d{6}$/.test(pin)) {
+    error.textContent = "PIN harus berupa 6 digit angka";
+    error.classList.remove('hidden');
+    return;
+  }
+  error.classList.add('hidden');
+
+  // Cek login admin
+  if (card === adminCard && pin === adminPin) {
+    // Redirect ke admin panel
+    window.location.href = "admin.html?adminCard=" + adminCard;
+    return;
+  }
+
+  // User biasa → redirect ke dashboard
+  window.location.href = "index.html";
+}
 </script>
 
 </body>
