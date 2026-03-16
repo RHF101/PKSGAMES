@@ -1,1 +1,54 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JamWallet - Login</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        body { margin:0; background:linear-gradient(135deg,#0a1f0a,#001a00); color:white; font-family:Arial,sans-serif; text-align:center; padding:40px 20px; }
+        input { padding:15px; width:90%; max-width:400px; margin:15px 0; font-size:18px; border-radius:10px; border:none; }
+        button { padding:15px 30px; font-size:18px; background:#00cc00; color:black; border:none; border-radius:15px; margin:10px; cursor:pointer; }
+    </style>
+</head>
+<body>
+    <h1>JamWallet</h1>
+    <p>Login dengan Nomor Kartu ATM Resmi</p>
+    <input type="text" id="card-number" placeholder="Nomor Kartu ATM" maxlength="20">
+    <br><br>
+    <button onclick="login()">MASUK</button>
+    <p><a href="register.html" style="color:#88ffaa;">Belum punya kartu? Register di sini</a></p>
+    <p><a href="admin.html" style="color:#88ffaa;">→ Admin Panel</a></p>
 
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+    
+    <script>
+        const firebaseConfig = {
+          apiKey: "AIzaSyCs7Vnysf25BwhN2-fPTODd48xwzbPkbzI",
+          authDomain: "rhf-shop-mafia-8d2e5.firebaseapp.com",
+          databaseURL: "https://rhf-shop-mafia-8d2e5-default-rtdb.firebaseio.com",
+          projectId: "rhf-shop-mafia-8d2e5",
+          storageBucket: "rhf-shop-mafia-8d2e5.firebasestorage.app",
+          messagingSenderId: "158711184948",
+          appId: "1:158711184948:web:9223f07fa6658601189461",
+          measurementId: "G-R6KN1EYMB3"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        window.login = async function() {
+            const cardNo = document.getElementById('card-number').value.trim();
+            if (!cardNo || cardNo.length < 8) return alert("Nomor kartu minimal 8 digit!");
+
+            const snap = await db.ref('cards/' + cardNo).once('value');
+            if (!snap.exists()) return alert("Kartu tidak terdaftar! Hubungi Admin.");
+
+            localStorage.setItem('currentCard', cardNo);
+            window.location.href = "index.html";
+        };
+    </script>
+</body>
+</html>
