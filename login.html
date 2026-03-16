@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RHF Wallet - Login</title>
+<title>RHF Wallet - Login & Registrasi</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-  body {
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+body {
     font-family: 'Inter', sans-serif;
     background: linear-gradient(135deg, #4f46e5, #6366f1);
     min-height: 100vh;
@@ -16,83 +16,135 @@
     align-items: center;
     padding: 20px;
     background-attachment: fixed;
-  }
-  .card {
+}
+.card {
     background: rgba(255,255,255,0.08);
-    backdrop-filter: blur(15px);
+    backdrop-filter: blur(20px);
     border-radius: 2rem;
-    padding: 40px 30px;
+    padding: 30px 25px;
     box-shadow: 0 15px 30px rgba(0,0,0,0.3);
     max-width: 400px;
     width: 100%;
     text-align: center;
-  }
-  .btn-login {
-    height: 80px;
-    border-radius: 20px;
-    font-size: 20px;
-    font-weight: bold;
-    transition: all 0.3s ease;
-  }
-  .btn-login:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-  }
+}
+input:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255,255,255,0.3);
+}
+button { transition: all 0.3s ease; }
+button:hover { transform: translateY(-2px); }
+.hidden { display: none; }
 </style>
 </head>
 <body>
 
 <div class="card">
-  <h1 class="text-white text-3xl font-bold mb-8">RHF WALLET</h1>
+    <h1 class="text-white text-3xl font-bold mb-6">RHF WALLET</h1>
 
-  <button onclick="openLogin()" class="btn-login w-full bg-gradient-to-r from-blue-500 to-indigo-500 text-white mb-5">LOGIN / DAFTAR BANK</button>
-  <button onclick="openLogin()" class="btn-login w-full bg-gradient-to-r from-emerald-500 to-green-500 text-white mb-8">LOGIN / DAFTAR E-WALLET</button>
+    <!-- Pilihan Login / Registrasi -->
+    <div id="main-options">
+        <button onclick="selectType('wallet')" class="w-full mb-4 py-5 rounded-xl text-white font-bold text-lg bg-emerald-500">LOGIN / DAFTAR E-WALLET</button>
+        <button onclick="selectType('bank')" class="w-full py-5 rounded-xl text-white font-bold text-lg bg-blue-500">LOGIN / DAFTAR BANK</button>
+    </div>
 
-  <div id="login-form" class="hidden text-left mt-6">
-    <h2 class="text-white text-xl font-semibold mb-4">Masuk</h2>
-    <p class="text-white text-sm mb-2">Nomor Kartu / Nomor HP</p>
-    <input type="tel" id="login-card" placeholder="Contoh: 123456789101112" class="w-full mb-3 px-4 py-3 rounded-xl text-black text-lg">
-    <p class="text-white text-sm mb-2">PIN / Password (6 digit angka)</p>
-    <input type="password" id="login-pin" placeholder="●●●●●●" maxlength="6" class="w-full mb-4 px-4 py-3 rounded-xl text-black text-lg">
-    <button onclick="login()" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white py-3 rounded-xl font-semibold">Masuk</button>
-    <p id="login-error" class="text-red-400 text-sm mt-2 hidden"></p>
-  </div>
+    <!-- Form Gabungan -->
+    <div id="form-container" class="hidden text-left mt-6">
+        <h2 id="form-title" class="text-white text-xl font-semibold mb-4"></h2>
+
+        <!-- Nama Lengkap -->
+        <div id="field-name" class="mb-3 hidden">
+            <label class="text-white text-sm mb-1 block">Nama Lengkap</label>
+            <input id="name" type="text" class="w-full rounded-xl px-4 py-3" placeholder="Nama Lengkap">
+        </div>
+
+        <!-- Nomor HP / Kartu -->
+        <div class="mb-3">
+            <label id="label-phone" class="text-white text-sm mb-1 block">Nomor HP</label>
+            <input id="cardOrPhone" type="text" class="w-full rounded-xl px-4 py-3" placeholder="Nomor HP atau Kartu Admin">
+        </div>
+
+        <!-- NIK KTP (Bank) -->
+        <div id="field-nik" class="mb-3 hidden">
+            <label class="text-white text-sm mb-1 block">NIK KTP</label>
+            <input id="nik" type="text" class="w-full rounded-xl px-4 py-3" placeholder="16 digit angka">
+        </div>
+
+        <!-- PIN -->
+        <div class="mb-3">
+            <label class="text-white text-sm mb-1 block">PIN (6 digit angka)</label>
+            <input id="pin" type="password" class="w-full rounded-xl px-4 py-3" maxlength="6" placeholder="******">
+        </div>
+
+        <!-- Submit -->
+        <button onclick="submitForm()" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white py-3 rounded-xl font-semibold mt-2 mb-2">Masuk / Daftar</button>
+
+        <p id="error-msg" class="text-red-400 mt-2 text-sm"></p>
+    </div>
 </div>
 
 <script>
-let adminCard = "123456789101112"; // default kartu admin pertama kali
-let adminPin = "848586";           // PIN rahasia admin
+let selectedType = null; // wallet / bank
+const ADMIN_CARD = "123456789101112";
+const ADMIN_PIN = "848586";
 
-function openLogin() {
-  document.getElementById('login-form').classList.remove('hidden');
+function selectType(type){
+    selectedType = type;
+    document.getElementById('main-options').classList.add('hidden');
+    document.getElementById('form-container').classList.remove('hidden');
+    document.getElementById('form-title').innerText = type === 'wallet' ? "Login / Registrasi E-Wallet" : "Login / Registrasi Bank";
+
+    // Tampilkan field sesuai type
+    if(type === 'wallet'){
+        document.getElementById('field-name').classList.remove('hidden');
+        document.getElementById('field-nik').classList.add('hidden');
+        document.getElementById('label-phone').innerText = "Nomor HP";
+    } else if(type === 'bank'){
+        document.getElementById('field-name').classList.remove('hidden');
+        document.getElementById('field-nik').classList.remove('hidden');
+        document.getElementById('label-phone').innerText = "Nomor HP / Kartu Admin";
+    }
 }
 
-function login() {
-  const card = document.getElementById('login-card').value.trim();
-  const pin = document.getElementById('login-pin').value.trim();
-  const error = document.getElementById('login-error');
+function submitForm(){
+    const name = document.getElementById('name').value.trim();
+    const cardOrPhone = document.getElementById('cardOrPhone').value.trim();
+    const pin = document.getElementById('pin').value.trim();
+    const nik = document.getElementById('nik').value.trim();
+    const errorMsg = document.getElementById('error-msg');
+    errorMsg.innerText = "";
 
-  if (!card || !pin) {
-    error.textContent = "Semua field harus diisi";
-    error.classList.remove('hidden');
-    return;
-  }
-  if (!/^\d{6}$/.test(pin)) {
-    error.textContent = "PIN harus berupa 6 digit angka";
-    error.classList.remove('hidden');
-    return;
-  }
-  error.classList.add('hidden');
+    // Validasi PIN
+    if(!/^[0-9]{6}$/.test(pin)){
+        errorMsg.innerText = "PIN hanya boleh angka dan harus 6 digit";
+        return;
+    }
 
-  // Cek login admin
-  if (card === adminCard && pin === adminPin) {
-    // Redirect ke admin panel
-    window.location.href = "admin.html?adminCard=" + adminCard;
-    return;
-  }
+    // Validasi nama
+    if(selectedType === 'wallet' && name.length < 3){
+        errorMsg.innerText = "Nama minimal 3 karakter";
+        return;
+    }
 
-  // User biasa → redirect ke dashboard
-  window.location.href = "index.html";
+    // Validasi Bank
+    if(selectedType === 'bank'){
+        if(name.length < 3){
+            errorMsg.innerText = "Nama minimal 3 karakter";
+            return;
+        }
+        if(!/^[0-9]{16}$/.test(nik)){
+            errorMsg.innerText = "NIK harus 16 digit angka";
+            return;
+        }
+    }
+
+    // Cek Admin
+    if(cardOrPhone === ADMIN_CARD && pin === ADMIN_PIN){
+        window.location.href = "admin.html";
+        return;
+    }
+
+    // Simulasi login/register user biasa
+    window.location.href = "index.html";
 }
 </script>
 
