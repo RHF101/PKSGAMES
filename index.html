@@ -3,137 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PlayStation 3 Simulator</title>
+    <title>JamWallet - Wallet</title>
+    <link rel="manifest" href="manifest.json">
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(to bottom, #001f3f, #000000);
-            color: white;
-            font-family: 'Arial Black', Arial, sans-serif;
-            height: 100vh;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-        .ps-logo {
-            font-size: 70px;
-            font-weight: 900;
-            letter-spacing: 5px;
-            text-shadow: 0 0 30px #00aaff, 0 0 60px #00aaff;
-            margin-bottom: 40px;
-            color: #00ccff;
-        }
-        .xmb {
-            display: flex;
-            justify-content: center;
-            gap: 50px;
-            position: absolute;
-            bottom: 80px;
-            width: 100%;
-        }
-        .category {
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            padding: 10px;
-        }
-        .category.active {
-            transform: scale(1.3);
-            filter: brightness(1.5);
-        }
-        .icon {
-            font-size: 90px;
-            display: block;
-            margin-bottom: 8px;
-            text-shadow: 0 0 15px #fff;
-        }
-        .label {
-            font-size: 22px;
-            font-weight: bold;
-        }
-        .content {
-            text-align: center;
-            max-width: 600px;
-            margin-top: -100px;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.6);
-            border-radius: 15px;
-            border: 2px solid #00aaff;
-        }
+        body { margin:0; background:linear-gradient(135deg,#0a1f0a,#001a00); color:white; font-family:Arial,sans-serif; text-align:center; padding:20px; }
+        .balance { font-size:42px; font-weight:700; margin:30px 0; color:#00ff88; }
+        button { padding:15px 30px; font-size:18px; background:#00cc00; color:black; border:none; border-radius:15px; margin:10px; cursor:pointer; }
+        .history { margin-top:30px; background:rgba(255,255,255,0.1); padding:15px; border-radius:15px; text-align:left; }
     </style>
 </head>
 <body>
-    <div class="ps-logo">PLAYSTATION 3</div>
+    <h2>Saldo Kartu <span id="card-display"></span></h2>
+    <div class="balance" id="saldo">Rp 0</div>
     
-    <div class="content" id="content">
-        <h1>Selamat Datang di XMB</h1>
-        <p>Gunakan ← → atau klik menu di bawah.<br>Tekan Enter untuk pilih!</p>
+    <button onclick="topUp()">Top Up</button>
+    <button onclick="kirimUang()">Kirim Uang</button>
+    <button onclick="logout()" style="background:#ff4444;">Keluar</button>
+
+    <div class="history">
+        <h3>Riwayat Transaksi</h3>
+        <div id="history-list"></div>
     </div>
 
-    <div class="xmb" id="xmb">
-        <div class="category active" data-index="0" onclick="select(0)">
-            <span class="icon">🎮</span>
-            <span class="label">Game</span>
-        </div>
-        <div class="category" data-index="1" onclick="select(1)">
-            <span class="icon">🎵</span>
-            <span class="label">Music</span>
-        </div>
-        <div class="category" data-index="2" onclick="select(2)">
-            <span class="icon">🎥</span>
-            <span class="label">Video</span>
-        </div>
-        <div class="category" data-index="3" onclick="select(3)">
-            <span class="icon">📺</span>
-            <span class="label">TV</span>
-        </div>
-        <div class="category" data-index="4" onclick="select(4)">
-            <span class="icon">🌐</span>
-            <span class="label">Internet</span>
-        </div>
-    </div>
-
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+    
     <script>
-        let index = 0;
-        const cats = document.querySelectorAll('.category');
-        const contentDiv = document.getElementById('content');
+        const firebaseConfig = {
+          apiKey: "AIzaSyCs7Vnysf25BwhN2-fPTODd48xwzbPkbzI",
+          authDomain: "rhf-shop-mafia-8d2e5.firebaseapp.com",
+          databaseURL: "https://rhf-shop-mafia-8d2e5-default-rtdb.firebaseio.com",
+          projectId: "rhf-shop-mafia-8d2e5",
+          storageBucket: "rhf-shop-mafia-8d2e5.firebasestorage.app",
+          messagingSenderId: "158711184948",
+          appId: "1:158711184948:web:9223f07fa6658601189461",
+          measurementId: "G-R6KN1EYMB3"
+        };
 
-        function select(i) {
-            cats.forEach(c => c.classList.remove('active'));
-            cats[i].classList.add('active');
-            index = i;
-            
-            const texts = [
-                `<h1>🎮 GAME</h1><p>God of War • Gran Turismo • LittleBigPlanet</p>`,
-                `<h1>🎵 MUSIC</h1><p>Putar lagu dari USB atau Spotify!</p>`,
-                `<h1>🎥 VIDEO</h1><p>Blu-ray • MKV • Folder Video</p>`,
-                `<h1>📺 TV</h1><p>Live TV &amp; Streaming</p>`,
-                `<h1>🌐 INTERNET</h1><p>Browser PS3</p>`
-            ];
-            contentDiv.innerHTML = texts[i];
-        }
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
-        // Keyboard (panah kiri/kanan + Enter) seperti controller PS3
-        document.addEventListener('keydown', e => {
-            if (e.key === 'ArrowRight') {
-                index = (index + 1) % 5;
-                select(index);
-            }
-            if (e.key === 'ArrowLeft') {
-                index = (index - 1 + 5) % 5;
-                select(index);
-            }
-            if (e.key === 'Enter') {
-                alert(`Kamu membuka: ${cats[index].querySelector('.label').textContent} 🔥`);
-            }
+        const currentCard = localStorage.getItem('currentCard');
+        if (!currentCard) window.location.href = "login.html";
+
+        document.getElementById('card-display').textContent = currentCard;
+
+        let currentSaldo = 0;
+
+        db.ref('users/' + currentCard + '/saldo').on('value', snap => {
+            currentSaldo = snap.val() || 0;
+            document.getElementById('saldo').textContent = 'Rp ' + currentSaldo.toLocaleString('id-ID');
         });
 
-        // Mulai dari Game
-        select(0);
+        function loadHistory() {
+            db.ref('transactions/' + currentCard).orderByChild('waktu').limitToLast(20).on('value', snap => {
+                const el = document.getElementById('history-list');
+                el.innerHTML = '';
+                snap.forEach(child => {
+                    const t = child.val();
+                    const d = document.createElement('div');
+                    d.style.padding = '10px 0';
+                    d.style.borderBottom = '1px solid #555';
+                    d.innerHTML = `<strong>\( {t.keterangan}</strong><br><small> \){new Date(t.waktu).toLocaleString('id-ID')}</small><br><span style="color:\( {t.jenis==='Top Up'?'#00ff00':'#ff4444'}"> \){t.jenis==='Top Up' ? '+' : '-'} Rp ${t.nominal.toLocaleString('id-ID')}</span>`;
+                    el.appendChild(d);
+                });
+            });
+        }
+        loadHistory();
+
+        window.topUp = function() {
+            const amt = parseInt(prompt("Nominal Top Up (Rp):", "100000"));
+            if (!amt || amt < 1000) return alert("Minimal Rp 1.000");
+            db.ref('users/' + currentCard + '/saldo').set(currentSaldo + amt);
+            db.ref('transactions/' + currentCard).push({jenis:"Top Up", nominal:amt, keterangan:"Top Up Saldo", waktu:Date.now()});
+        };
+
+        window.kirimUang = function() {
+            const amt = parseInt(prompt("Nominal Kirim (Rp):", "50000"));
+            const tujuan = prompt("Kirim ke:", "Teman");
+            if (!amt || amt < 1000) return alert("Minimal Rp 1.000");
+            if (amt > currentSaldo) return alert("Saldo tidak cukup!");
+            db.ref('users/' + currentCard + '/saldo').set(currentSaldo - amt);
+            db.ref('transactions/' + currentCard).push({jenis:"Kirim", nominal:amt, keterangan:"Kirim ke " + tujuan, waktu:Date.now()});
+        };
+
+        window.logout = function() {
+            localStorage.removeItem('currentCard');
+            window.location.href = "login.html";
+        };
     </script>
 </body>
-  </html>
+</html>
