@@ -1,290 +1,94 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RHF Wallet - Secure Digital Wallet</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-        .page { display: none; min-height: 100vh; }
-        .page.active { display: block; }
-        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RHF Wallet Login</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+body { font-family: 'Inter', sans-serif; background: linear-gradient(to right, #4f46e5, #3b82f6); }
+.login-card { max-width: 400px; margin: 6rem auto; background: white; border-radius: 2rem; padding: 2rem; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+</style>
 </head>
-<body class="bg-gray-50 text-slate-800">
+<body>
 
-    <div id="app">
-        <section id="login-page" class="page active px-6 flex flex-col justify-center items-center">
-            <div class="w-full max-w-md text-center">
-                <div class="mb-12">
-                    <h1 class="text-4xl font-black text-blue-600 tracking-tighter">RHF WALLET</h1>
-                    <p class="text-gray-500 font-medium">Secure Digital Wallet</p>
-                </div>
-                <div class="space-y-6">
-                    <button onclick="showPage('register-bank-page')" class="w-full h-[80px] bg-white border-2 border-blue-600 text-blue-600 rounded-[20px] text-[20px] font-bold shadow-sm active:scale-95 transition-all">
-                        LOGIN / DAFTAR BANK
-                    </button>
-                    <button onclick="showPage('register-wallet-page')" class="w-full h-[80px] bg-blue-600 text-white rounded-[20px] text-[20px] font-bold shadow-lg shadow-blue-200 active:scale-95 transition-all">
-                        LOGIN / DAFTAR E-WALLET
-                    </button>
-                </div>
-            </div>
-        </section>
+<div class="login-card">
+  <h2 class="text-2xl font-bold text-center text-gray-700 mb-6">RHF Wallet Login</h2>
 
-        <section id="register-wallet-page" class="page bg-white p-6">
-            <div class="max-w-md mx-auto">
-                <button onclick="showPage('login-page')" class="mb-6 text-blue-600"><i class="fa-solid fa-arrow-left text-xl"></i></button>
-                <h2 class="text-2xl font-bold mb-2">Daftar E-Wallet</h2>
-                <div class="space-y-4 mt-8">
-                    <input type="text" id="w-name" placeholder="Nama Lengkap" class="w-full p-4 bg-gray-50 border rounded-2xl focus:border-blue-500 outline-none">
-                    <input type="tel" id="w-phone" placeholder="Nomor HP (08...)" class="w-full p-4 bg-gray-50 border rounded-2xl focus:border-blue-500 outline-none">
-                    <input type="password" id="w-pin" maxlength="6" placeholder="PIN (6 Digit Angka)" class="w-full p-4 bg-gray-50 border rounded-2xl focus:border-blue-500 outline-none">
-                    <input type="password" id="w-pin-confirm" maxlength="6" placeholder="Konfirmasi PIN" class="w-full p-4 bg-gray-50 border rounded-2xl focus:border-blue-500 outline-none">
-                    <p id="w-error" class="text-red-500 text-sm font-medium hidden"></p>
-                    <button onclick="handleWalletReg()" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold shadow-lg mt-4">Lanjut</button>
-                </div>
-            </div>
-        </section>
+  <!-- USER LOGIN / REGISTER -->
+  <div class="flex flex-col gap-4 mb-6">
+    <button onclick="window.location.href='register-bank.html'" 
+            class="h-20 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-lg">LOGIN / DAFTAR BANK</button>
+    <button onclick="window.location.href='register-wallet.html'" 
+            class="h-20 rounded-2xl bg-green-600 hover:bg-green-700 text-white font-bold text-lg">LOGIN / DAFTAR E-WALLET</button>
+  </div>
 
-        <section id="register-bank-page" class="page bg-white p-6">
-            <div class="max-w-md mx-auto">
-                <button onclick="showPage('login-page')" class="mb-6 text-blue-600"><i class="fa-solid fa-arrow-left text-xl"></i></button>
-                <h2 class="text-2xl font-bold mb-2">Daftar Akun Bank</h2>
-                <div class="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
-                    <input type="text" id="b-name" placeholder="Nama Lengkap" class="w-full p-4 bg-gray-50 border rounded-2xl outline-none">
-                    <input type="tel" id="b-phone" placeholder="Nomor HP" class="w-full p-4 bg-gray-50 border rounded-2xl outline-none">
-                    <input type="email" id="b-email" placeholder="Email" class="w-full p-4 bg-gray-50 border rounded-2xl outline-none">
-                    <input type="password" id="b-pin" maxlength="6" placeholder="PIN (6 Digit)" class="w-full p-4 bg-gray-50 border rounded-2xl outline-none">
-                    <input type="password" id="b-pin-confirm" maxlength="6" placeholder="Konfirmasi PIN" class="w-full p-4 bg-gray-50 border rounded-2xl outline-none">
-                    <input type="number" id="b-nik" placeholder="NIK KTP (16 Digit)" class="w-full p-4 bg-gray-50 border rounded-2xl outline-none">
-                    <input type="number" id="b-kk" placeholder="Nomor KK (16 Digit)" class="w-full p-4 bg-gray-50 border rounded-2xl outline-none">
-                </div>
-                <p id="b-error" class="text-red-500 text-sm font-medium mt-2 hidden"></p>
-                <button onclick="handleBankReg()" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold mt-6">Verifikasi & Daftar</button>
-            </div>
-        </section>
+  <hr class="my-4">
 
-        <section id="otp-page" class="page flex items-center justify-center px-6">
-            <div class="max-w-md w-full text-center">
-                <h2 class="text-3xl font-bold mb-2">Kode OTP</h2>
-                <div class="mb-8 p-4 bg-blue-50 rounded-2xl border border-blue-100">
-                    <p class="text-blue-600 font-bold text-xs uppercase mb-1">Simulasi OTP Anda</p>
-                    <span id="simulated-otp" class="text-2xl font-black tracking-widest text-blue-800">000000</span>
-                </div>
-                <input type="number" id="otp-input" class="w-full text-center text-3xl font-bold tracking-[0.5rem] p-4 bg-white border-2 border-blue-600 rounded-2xl outline-none mb-4" placeholder="------">
-                <p id="otp-error" class="text-red-500 font-medium hidden mb-4">OTP salah</p>
-                <button onclick="verifyOTP()" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold shadow-lg">Verifikasi</button>
-            </div>
-        </section>
+  <!-- ADMIN LOGIN -->
+  <h3 class="text-lg font-semibold text-gray-700 mb-4">Login Admin</h3>
+  <form id="adminLoginForm">
+    <label class="block mb-2 text-gray-600">Email Admin</label>
+    <input type="email" id="adminEmail" value="gacoruncek73@gmail.com" readonly
+           class="w-full border border-gray-300 rounded-xl px-4 py-3 mb-4 text-gray-700" />
 
-        <section id="dashboard-page" class="page bg-gray-100">
-            <div class="bg-gradient-to-br from-blue-700 to-blue-500 pt-12 pb-24 px-6 rounded-b-[40px] shadow-lg">
-                <div class="flex justify-between items-center mb-8 text-white">
-                    <div>
-                        <p class="opacity-80 text-sm">Saldo Anda,</p>
-                        <h2 id="dash-name" class="text-xl font-bold">User</h2>
-                    </div>
-                    <button onclick="showPage('profile-page')" class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center"><i class="fa-solid fa-user"></i></button>
-                </div>
-                <div class="bg-white rounded-3xl p-6 shadow-xl flex justify-between items-center">
-                    <div>
-                        <p class="text-gray-400 text-xs font-bold uppercase mb-1">RHF Balance</p>
-                        <h3 class="text-3xl font-black text-slate-800">Rp <span id="dash-balance">0</span></h3>
-                    </div>
-                    <button class="bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-bold">Top Up</button>
-                </div>
-            </div>
-            <div class="grid grid-cols-4 gap-4 px-6 -mt-12">
-                <div class="flex flex-col items-center"><div class="w-14 h-14 bg-white rounded-2xl shadow-md flex items-center justify-center text-blue-600 mb-1"><i class="fa-solid fa-paper-plane"></i></div><span class="text-[10px] font-bold">Transfer</span></div>
-                <div class="flex flex-col items-center"><div class="w-14 h-14 bg-white rounded-2xl shadow-md flex items-center justify-center text-blue-600 mb-1"><i class="fa-solid fa-qrcode"></i></div><span class="text-[10px] font-bold">QRIS</span></div>
-                <div class="flex flex-col items-center"><div class="w-14 h-14 bg-white rounded-2xl shadow-md flex items-center justify-center text-blue-600 mb-1"><i class="fa-solid fa-wallet"></i></div><span class="text-[10px] font-bold">Wallet</span></div>
-                <div class="flex flex-col items-center"><div class="w-14 h-14 bg-white rounded-2xl shadow-md flex items-center justify-center text-blue-600 mb-1"><i class="fa-solid fa-grid-2"></i></div><span class="text-[10px] font-bold">Lainnya</span></div>
-            </div>
-        </section>
+    <label class="block mb-2 text-gray-600">PIN Admin</label>
+    <input type="password" id="adminPin" placeholder="6 digit angka" maxlength="6"
+           class="w-full border border-gray-300 rounded-xl px-4 py-3 mb-6 text-gray-700" />
 
-        <section id="profile-page" class="page bg-white p-6 text-center">
-            <button onclick="showPage('dashboard-page')" class="absolute left-6 text-slate-800"><i class="fa-solid fa-arrow-left text-xl"></i></button>
-            <div class="mt-12">
-                <div class="w-24 h-24 bg-blue-100 rounded-full mx-auto mb-4 flex items-center justify-center text-blue-600"><i class="fa-solid fa-user text-4xl"></i></div>
-                <h3 id="prof-name" class="text-2xl font-bold">Name</h3>
-                <p id="prof-phone" class="text-gray-500 mb-8">Phone</p>
-                <button onclick="logout()" class="w-full border-2 border-red-500 text-red-500 py-4 rounded-2xl font-bold">Keluar Akun</button>
-            </div>
-        </section>
-    </div>
+    <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-semibold">Login Admin</button>
+  </form>
 
-    ```
+  <p id="error" class="text-red-500 text-sm mt-4 hidden"></p>
+</div>
 
----
+<script>
+  // ==========================
+  // ADMIN CONFIG
+  // ==========================
+  const ADMIN_EMAIL = "gacoruncek73@gmail.com";
+  let ADMIN_PIN = "123456"; // PIN default, akan diganti tiap 2 jam
 
+  // Generate PIN baru tiap 2 jam, hanya admin
+  setInterval(() => {
+    ADMIN_PIN = Math.floor(100000 + Math.random() * 900000).toString();
+    console.log("PIN admin baru (2 jam):", ADMIN_PIN);
+    // Hanya logout admin session (jika ada)
+    if(sessionStorage.getItem("admin_logged_in") === "true"){
+        alert("PIN admin baru telah diterbitkan. Sesi admin lama logout.");
+        sessionStorage.removeItem("admin_logged_in");
+    }
+  }, 2 * 60 * 60 * 1000); // 2 jam
 
-  <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getDatabase, ref, set, get, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+  // ==========================
+  // ADMIN LOGIN
+  // ==========================
+  document.getElementById("adminLoginForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    const email = document.getElementById("adminEmail").value;
+    const pin = document.getElementById("adminPin").value;
+    const pinRegex = /^[0-9]{6}$/;
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyCs7Vnysf25BwhN2-fPTODd48xwzbPkbzI",
-            authDomain: "rhf-shop-mafia-8d2e5.firebaseapp.com",
-            databaseURL: "https://rhf-shop-mafia-8d2e5-default-rtdb.firebaseio.com",
-            projectId: "rhf-shop-mafia-8d2e5",
-            storageBucket: "rhf-shop-mafia-8d2e5.firebasestorage.app",
-            messagingSenderId: "158711184948",
-            appId: "1:158711184948:web:9223f07fa6658601189461",
-            measurementId: "G-R6KN1EYMB3"
-        };
+    if(!pinRegex.test(pin)){
+      showError("PIN hanya boleh angka dan harus 6 digit");
+      return;
+    }
 
-        // Init Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getDatabase(app);
+    if(email === ADMIN_EMAIL && pin === ADMIN_PIN){
+      sessionStorage.setItem("admin_logged_in","true");
+      alert("Login Admin berhasil!");
+      window.location.href = "admin.html";
+    } else {
+      showError("PIN salah atau email tidak sesuai");
+    }
+  });
 
-        // State Global
-        let tempRegData = null;
-        let generatedOTP = null;
+  function showError(msg){
+    const el = document.getElementById("error");
+    el.textContent = msg;
+    el.classList.remove("hidden");
+  }
+</script>
 
-        // --- Navigasi ---
-        window.showPage = (pageId) => {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-            window.scrollTo(0, 0);
-        };
-
-        // --- Monitor Auth Status ---
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                await loadDashboard(user.uid);
-            } else {
-                showPage('login-page');
-            }
-        });
-
-        // --- Load Dashboard Data ---
-        async function loadDashboard(uid) {
-            let snap = await get(ref(db, `users/${uid}`));
-            if (!snap.exists()) snap = await get(ref(db, `bank_users/${uid}`));
-            
-            if (snap.exists()) {
-                const data = snap.val();
-                document.getElementById('dash-name').innerText = data.name;
-                document.getElementById('dash-balance').innerText = data.balance.toLocaleString('id-ID');
-                document.getElementById('prof-name').innerText = data.name;
-                document.getElementById('prof-phone').innerText = data.phone;
-                showPage('dashboard-page');
-            }
-        }
-
-        // --- Handler Registrasi E-Wallet ---
-        window.handleWalletReg = async () => {
-            const name = document.getElementById('w-name').value;
-            const phone = document.getElementById('w-phone').value;
-            const pin = document.getElementById('w-pin').value;
-            const confirm = document.getElementById('w-pin-confirm').value;
-            const err = document.getElementById('w-error');
-
-            if (name.length < 3) return showError(err, "Nama minimal 3 karakter");
-            if (!/^(\+62|08)[0-9]{8,13}$/.test(phone)) return showError(err, "Format nomor HP salah");
-            if (!/^[0-9]{6}$/.test(pin)) return showError(err, "PIN hanya boleh angka dan harus 6 digit");
-            if (pin !== confirm) return showError(err, "PIN tidak cocok");
-
-            // Check duplicate phone
-            const phoneQuery = query(ref(db, 'users'), orderByChild('phone'), equalTo(phone));
-            const snap = await get(phoneQuery);
-            if (snap.exists()) return showError(err, "Nomor sudah terdaftar");
-
-            tempRegData = { name, phone, pin, type: 'wallet' };
-            startOTP();
-        };
-
-        // --- Handler Registrasi Bank ---
-        window.handleBankReg = async () => {
-            const data = {
-                name: document.getElementById('b-name').value,
-                phone: document.getElementById('b-phone').value,
-                email: document.getElementById('b-email').value,
-                pin: document.getElementById('b-pin').value,
-                confirm: document.getElementById('b-pin-confirm').value,
-                nik: document.getElementById('b-nik').value,
-                kk: document.getElementById('b-kk').value,
-                type: 'bank'
-            };
-            const err = document.getElementById('b-error');
-
-            if (data.name.length < 3) return showError(err, "Nama tidak valid");
-            if (!data.email.includes('@')) return showError(err, "Email tidak valid");
-            if (!/^[0-9]{6}$/.test(data.pin)) return showError(err, "PIN harus 6 digit angka");
-            if (data.pin !== data.confirm) return showError(err, "PIN tidak cocok");
-            if (data.nik.length !== 16 || data.kk.length !== 16) return showError(err, "NIK/KK harus 16 digit");
-
-            // One Human One Account Check
-            const nikSnap = await get(query(ref(db, 'bank_users'), orderByChild('nik'), equalTo(data.nik)));
-            if (nikSnap.exists()) return showError(err, "NIK sudah terdaftar");
-            
-            const phoneSnap = await get(query(ref(db, 'bank_users'), orderByChild('phone'), equalTo(data.phone)));
-            if (phoneSnap.exists()) return showError(err, "Nomor sudah terdaftar");
-
-            tempRegData = data;
-            startOTP();
-        };
-
-        // --- OTP Logic ---
-        function startOTP() {
-            generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
-            document.getElementById('simulated-otp').innerText = generatedOTP;
-            showPage('otp-page');
-        }
-
-        window.verifyOTP = async () => {
-            const input = document.getElementById('otp-input').value;
-            const err = document.getElementById('otp-error');
-
-            if (input === generatedOTP) {
-                try {
-                    const email = tempRegData.email || `${tempRegData.phone}@rhf.com`;
-                    const userCredential = await createUserWithEmailAndPassword(auth, email, tempRegData.pin + "0000");
-                    const uid = userCredential.user.uid;
-
-                    const path = tempRegData.type === 'wallet' ? `users/${uid}` : `bank_users/${uid}`;
-                    const payload = {
-                        uid,
-                        name: tempRegData.name,
-                        phone: tempRegData.phone,
-                        type: tempRegData.type,
-                        balance: 0,
-                        created_at: new Date().toISOString()
-                    };
-
-                    if (tempRegData.type === 'bank') {
-                        payload.email = tempRegData.email;
-                        payload.nik = tempRegData.nik;
-                        payload.kk = tempRegData.kk;
-                        payload.verified = true;
-                    }
-
-                    await set(ref(db, path), payload);
-                    // Auth state monitor will handle redirect to dashboard
-                } catch (e) {
-                    alert("Error: " + e.message);
-                }
-            } else {
-                err.classList.remove('hidden');
-            }
-        };
-
-        window.logout = () => {
-            signOut(auth).then(() => {
-                location.reload();
-            });
-        };
-
-        function showError(el, msg) {
-            el.innerText = msg;
-            el.classList.remove('hidden');
-            setTimeout(() => el.classList.add('hidden'), 3000);
-        }
-    </script>
 </body>
 </html>
