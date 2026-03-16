@@ -1,0 +1,21 @@
+{
+  "name": "JamWallet",
+  "short_name": "JamWallet",
+  "description": "E-Wallet Resmi Kartu ATM",
+  "start_url": "login.html",
+  "display": "standalone",
+  "background_color": "#001a00",
+  "theme_color": "#00cc00",
+  "icons": [
+    {
+      "src": "https://via.placeholder.com/192x192/00cc00/ffffff?text=JW",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://via.placeholder.com/512x512/00cc00/ffffff?text=JW",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
