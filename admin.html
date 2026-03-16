@@ -9,16 +9,9 @@
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; }
-        .sidebar { transition: all 0.3s; }
-        .nav-link { transition: all 0.3s; }
         .nav-link:hover { background-color: #1f2937; transform: translateX(8px); }
-        .card { transition: transform 0.3s; }
-        .card:hover { transform: translateY(-4px); }
         .table-row:hover { background-color: #1f2937; }
-        .modal { animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body class="bg-zinc-950 text-white">
@@ -30,7 +23,7 @@
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 bg-emerald-600 rounded-2xl flex items-center justify-center text-2xl font-bold">RHF</div>
                 <div>
-                    <h1 class="text-2xl font-bold tracking-tight">RHF Bank</h1>
+                    <h1 class="text-2xl font-bold">RHF Bank</h1>
                     <p class="text-emerald-400 text-sm">Admin Dashboard</p>
                 </div>
             </div>
@@ -44,118 +37,63 @@
                 <a onclick="navigateTo('users')" class="nav-link flex items-center gap-3 px-5 py-3.5 rounded-2xl hover:bg-zinc-800 cursor-pointer">
                     <i class="fas fa-users"></i> Users
                 </a>
-                <a onclick="navigateTo('cards')" class="nav-link flex items-center gap-3 px-5 py-3.5 rounded-2xl hover:bg-zinc-800 cursor-pointer">
-                    <i class="fas fa-credit-card"></i> Cards
-                </a>
                 <a onclick="navigateTo('transactions')" class="nav-link flex items-center gap-3 px-5 py-3.5 rounded-2xl hover:bg-zinc-800 cursor-pointer">
                     <i class="fas fa-exchange-alt"></i> Transactions
+                </a>
+                <a onclick="navigateTo('cards')" class="nav-link flex items-center gap-3 px-5 py-3.5 rounded-2xl hover:bg-zinc-800 cursor-pointer">
+                    <i class="fas fa-credit-card"></i> Cards
                 </a>
                 <a onclick="navigateTo('messages')" class="nav-link flex items-center gap-3 px-5 py-3.5 rounded-2xl hover:bg-zinc-800 cursor-pointer">
                     <i class="fas fa-envelope"></i> Messages
                 </a>
-                <a onclick="navigateTo('reports')" class="nav-link flex items-center gap-3 px-5 py-3.5 rounded-2xl hover:bg-zinc-800 cursor-pointer">
-                    <i class="fas fa-chart-bar"></i> Reports
-                </a>
-                <a onclick="navigateTo('fraud')" class="nav-link flex items-center gap-3 px-5 py-3.5 rounded-2xl hover:bg-zinc-800 cursor-pointer">
-                    <i class="fas fa-shield-alt"></i> Fraud Monitor
-                </a>
-                <a onclick="navigateTo('settings')" class="nav-link flex items-center gap-3 px-5 py-3.5 rounded-2xl hover:bg-zinc-800 cursor-pointer">
-                    <i class="fas fa-cog"></i> Settings
-                </a>
             </nav>
-        </div>
-
-        <div class="p-6 border-t border-zinc-800">
-            <div class="flex items-center gap-3 bg-zinc-800 rounded-2xl p-4">
-                <div class="w-9 h-9 bg-emerald-600 rounded-2xl flex items-center justify-center text-lg">👑</div>
-                <div class="flex-1">
-                    <div class="font-semibold">Super Admin</div>
-                    <div class="text-xs text-zinc-400">RHF Bank</div>
-                </div>
-                <button onclick="logoutAdmin()" class="text-zinc-400 hover:text-white">
-                    <i class="fas fa-sign-out-alt"></i>
-                </button>
-            </div>
         </div>
     </div>
 
     <!-- MAIN CONTENT -->
     <div class="flex-1 flex flex-col">
-        <!-- TOP BAR -->
         <div class="bg-zinc-900 border-b border-zinc-800 px-8 py-5 flex items-center justify-between">
-            <div class="flex items-center gap-4">
-                <input id="global-search" 
-                       onkeyup="if(event.key==='Enter') searchUsers()"
-                       type="text" 
-                       placeholder="Search name, card number..." 
-                       class="bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-3 w-96 focus:outline-none focus:border-emerald-500">
-            </div>
-            <div class="flex items-center gap-6">
-                <div class="relative">
-                    <i class="fas fa-bell text-xl cursor-pointer"></i>
-                    <span class="absolute -top-1 -right-1 bg-red-500 text-[10px] px-1.5 rounded-full">3</span>
-                </div>
-                <div class="flex items-center gap-3">
-                    <div class="text-right">
-                        <div class="font-semibold text-sm">RHF Admin</div>
-                        <div class="text-xs text-emerald-400">Online</div>
-                    </div>
-                    <div class="w-9 h-9 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-2xl flex items-center justify-center text-xl">👨‍💼</div>
-                </div>
-            </div>
+            <input id="global-search" type="text" placeholder="Cari nama atau nomor kartu..." 
+                   class="bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-3 w-96 focus:outline-none focus:border-emerald-500">
+            <button onclick="logoutAdmin()" class="text-zinc-400 hover:text-white flex items-center gap-2">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
         </div>
 
-        <!-- PAGE CONTENT -->
         <div class="flex-1 overflow-y-auto p-8 bg-zinc-950" id="main-content">
-            
-            <!-- DASHBOARD PAGE -->
+
+            <!-- DASHBOARD -->
             <div id="page-dashboard">
                 <h1 class="text-4xl font-bold mb-8">Dashboard Overview</h1>
-                
                 <div class="grid grid-cols-4 gap-6">
-                    <div class="card bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
-                        <div class="text-zinc-400 text-sm">Total Users</div>
-                        <div id="stat-users" class="text-5xl font-bold mt-2">12,847</div>
-                        <div class="text-emerald-400 text-sm mt-4 flex items-center gap-2">
-                            <i class="fas fa-arrow-up"></i> +184 today
-                        </div>
-                    </div>
-                    <div class="card bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
-                        <div class="text-zinc-400 text-sm">Total Bank Balance</div>
-                        <div id="stat-balance" class="text-5xl font-bold mt-2">Rp 87.4 M</div>
-                    </div>
-                    <div class="card bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
-                        <div class="text-zinc-400 text-sm">Transactions Today</div>
-                        <div id="stat-tx" class="text-5xl font-bold mt-2">2,394</div>
-                    </div>
-                    <div class="card bg-zinc-900 border border-red-900 rounded-3xl p-8">
-                        <div class="text-red-400 text-sm">Fraud Alerts</div>
-                        <div id="stat-fraud" class="text-5xl font-bold mt-2 text-red-400">7</div>
-                    </div>
-                </div>
-
-                <div class="mt-12 grid grid-cols-2 gap-6">
                     <div class="bg-zinc-900 rounded-3xl p-8">
-                        <h3 class="font-semibold mb-4">Recent Transactions</h3>
-                        <div id="recent-tx" class="space-y-4"></div>
+                        <p class="text-zinc-400">Total Users</p>
+                        <p id="stat-users" class="text-5xl font-bold mt-2">0</p>
                     </div>
                     <div class="bg-zinc-900 rounded-3xl p-8">
-                        <h3 class="font-semibold mb-4">Card Class Distribution</h3>
-                        <div id="class-chart" class="h-64 flex items-end gap-6"></div>
+                        <p class="text-zinc-400">Total Balance</p>
+                        <p id="stat-balance" class="text-5xl font-bold mt-2">Rp 0</p>
+                    </div>
+                    <div class="bg-zinc-900 rounded-3xl p-8">
+                        <p class="text-zinc-400">Transactions Today</p>
+                        <p id="stat-tx" class="text-5xl font-bold mt-2">0</p>
+                    </div>
+                    <div class="bg-zinc-900 rounded-3xl p-8">
+                        <p class="text-red-400">Fraud Alerts</p>
+                        <p id="stat-fraud" class="text-5xl font-bold mt-2 text-red-400">0</p>
                     </div>
                 </div>
             </div>
 
             <!-- USERS PAGE -->
             <div id="page-users" class="hidden">
-                <div class="flex justify-between items-center mb-6">
+                <div class="flex justify-between mb-6">
                     <h2 class="text-3xl font-bold">All Users</h2>
                     <button onclick="showCreateCardModal()" 
-                            class="bg-emerald-600 hover:bg-emerald-500 px-8 py-3 rounded-2xl font-semibold flex items-center gap-2">
-                        <i class="fas fa-plus"></i> Create New Card
+                            class="bg-emerald-600 hover:bg-emerald-500 px-6 py-3 rounded-2xl font-semibold flex items-center gap-2">
+                        <i class="fas fa-plus"></i> Buat Kartu Baru
                     </button>
                 </div>
-                
                 <div class="bg-zinc-900 rounded-3xl overflow-hidden">
                     <table class="w-full">
                         <thead class="bg-zinc-800">
@@ -171,12 +109,6 @@
                         <tbody id="users-table" class="text-sm"></tbody>
                     </table>
                 </div>
-            </div>
-
-            <!-- CARDS PAGE -->
-            <div id="page-cards" class="hidden">
-                <h2 class="text-3xl font-bold mb-6">All Cards</h2>
-                <div id="cards-grid" class="grid grid-cols-3 gap-6"></div>
             </div>
 
             <!-- TRANSACTIONS PAGE -->
@@ -198,41 +130,29 @@
                 </div>
             </div>
 
-            <!-- MESSAGES PAGE -->
-            <div id="page-messages" class="hidden">
-                <h2 class="text-3xl font-bold mb-6">Secure Messages</h2>
-                <div class="bg-zinc-900 rounded-3xl p-8">
-                    <input id="msg-card" placeholder="Card Number" class="bg-zinc-800 w-full rounded-2xl px-6 py-4 mb-4">
-                    <textarea id="msg-text" placeholder="Write message..." class="bg-zinc-800 w-full rounded-2xl px-6 py-4 h-32"></textarea>
-                    <button onclick="sendMessage()" class="mt-4 bg-emerald-600 px-8 py-4 rounded-2xl">Send Secure Message</button>
-                </div>
+            <!-- CARDS PAGE -->
+            <div id="page-cards" class="hidden">
+                <h2 class="text-3xl font-bold mb-6">All Cards</h2>
+                <div id="cards-grid" class="grid grid-cols-3 gap-6"></div>
             </div>
 
-            <!-- OTHER PAGES (Reports, Fraud, Settings) -->
-            <div id="page-reports" class="hidden text-center py-20">
-                <h2 class="text-3xl font-bold">Reports & Analytics</h2>
-                <p class="text-zinc-400 mt-4">Coming soon with full charts (PDF export ready)</p>
-            </div>
-            <div id="page-fraud" class="hidden text-center py-20">
-                <h2 class="text-3xl font-bold text-red-400">Fraud Monitor</h2>
-                <p class="text-zinc-400 mt-4">0 active fraud alerts • System secure</p>
-            </div>
-            <div id="page-settings" class="hidden text-center py-20">
-                <h2 class="text-3xl font-bold">System Settings</h2>
-                <p class="text-zinc-400 mt-4">Database rules • Backup • API keys</p>
+            <!-- MESSAGES PAGE -->
+            <div id="page-messages" class="hidden">
+                <h2 class="text-3xl font-bold mb-6">Kirim Pesan ke User</h2>
+                <input id="msg-card" placeholder="Nomor Kartu (527341...)" class="w-full p-5 rounded-2xl bg-zinc-800 mb-4">
+                <textarea id="msg-text" placeholder="Isi pesan..." class="w-full h-40 p-5 rounded-2xl bg-zinc-800"></textarea>
+                <button onclick="sendAdminMessage()" class="mt-6 bg-emerald-600 px-10 py-4 rounded-2xl">Kirim Pesan</button>
             </div>
         </div>
     </div>
 </div>
 
 <!-- CREATE CARD MODAL -->
-<div id="create-modal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center modal">
+<div id="create-modal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center">
     <div class="bg-zinc-900 rounded-3xl w-full max-w-md p-8">
-        <h3 class="text-2xl font-bold mb-6">Create New Bank Card</h3>
-        
-        <input id="modal-name" type="text" placeholder="Full Name" class="w-full bg-zinc-800 rounded-2xl px-6 py-4 mb-4">
-        <input id="modal-card" type="text" placeholder="527341 123456 7890" maxlength="25" 
-               onkeyup="formatCard(this)" class="w-full bg-zinc-800 rounded-2xl px-6 py-4 mb-4">
+        <h3 class="text-2xl font-bold mb-6">Buat Kartu Baru</h3>
+        <input id="modal-name" type="text" placeholder="Nama Lengkap" class="w-full bg-zinc-800 rounded-2xl px-6 py-4 mb-4">
+        <input id="modal-card" type="text" placeholder="527341 123456 7890" maxlength="25" onkeyup="formatCard(this)" class="w-full bg-zinc-800 rounded-2xl px-6 py-4 mb-4">
         <select id="modal-class" class="w-full bg-zinc-800 rounded-2xl px-6 py-4 mb-4">
             <option value="Standard">Standard</option>
             <option value="Preferred">Preferred</option>
@@ -241,17 +161,17 @@
             <option value="Signature">Signature</option>
             <option value="Elite">Elite</option>
         </select>
-        <input id="modal-password" type="password" maxlength="6" placeholder="6-digit password" class="w-full bg-zinc-800 rounded-2xl px-6 py-4 mb-4">
+        <input id="modal-password" type="password" maxlength="6" placeholder="Password 6 Digit" class="w-full bg-zinc-800 rounded-2xl px-6 py-4 mb-6">
         
         <div class="flex gap-3">
-            <button onclick="hideModal()" class="flex-1 py-4 bg-zinc-800 rounded-2xl">Cancel</button>
-            <button onclick="createNewCard()" class="flex-1 py-4 bg-emerald-600 rounded-2xl">Create Card</button>
+            <button onclick="hideModal()" class="flex-1 py-4 bg-zinc-800 rounded-2xl">Batal</button>
+            <button onclick="createNewCard()" class="flex-1 py-4 bg-emerald-600 rounded-2xl">Buat Kartu</button>
         </div>
     </div>
 </div>
 
 <script>
-// ==================== FIREBASE CONFIG (same as your project) ====================
+// ==================== FIREBASE CONFIG ====================
 const firebaseConfig = {
   apiKey: "AIzaSyCs7Vnysf25BwhN2-fPTODd48xwzbPkbzI",
   authDomain: "rhf-shop-mafia-8d2e5.firebaseapp.com",
@@ -270,31 +190,32 @@ const db = firebase.database();
 function navigateTo(page) {
     document.querySelectorAll('#main-content > div').forEach(div => div.classList.add('hidden'));
     document.getElementById(`page-${page}`).classList.remove('hidden');
+    
     if (page === 'users') loadUsersTable();
     if (page === 'transactions') loadTransactions();
     if (page === 'cards') loadCardsGrid();
 }
 
-// ==================== CARD FORMAT (6-6-4 with space) ====================
+// ==================== CARD FORMAT (6-6-4) ====================
 function formatCard(input) {
     let val = input.value.replace(/\s+/g, '').replace(/[^0-9]/g, '');
-    let result = '';
-    if (val.length > 0) result = val.substring(0,6);
-    if (val.length > 6) result += ' ' + val.substring(6,12);
-    if (val.length > 12) result += ' ' + val.substring(12,16);
-    input.value = result.trim();
+    let formatted = '';
+    if (val.length > 0) formatted += val.substring(0,6);
+    if (val.length > 6) formatted += ' ' + val.substring(6,12);
+    if (val.length > 12) formatted += ' ' + val.substring(12,16);
+    input.value = formatted.trim();
 }
 
-// ==================== LOAD USERS TABLE ====================
+// ==================== LOAD USERS TABLE (Real-time) ====================
 async function loadUsersTable() {
     const tbody = document.getElementById('users-table');
     tbody.innerHTML = '';
-    
+
     const snap = await db.ref('users').once('value');
     snap.forEach(child => {
         const user = child.val();
         const cardFormatted = child.key.replace(/(.{6})(.{6})(.{4})/, '$1 $2 $3');
-        
+
         const row = document.createElement('tr');
         row.className = 'table-row border-t border-zinc-800';
         row.innerHTML = `
@@ -323,120 +244,113 @@ async function createNewCard() {
     const cardClass = document.getElementById('modal-class').value;
     const password = document.getElementById('modal-password').value.trim();
 
-    if (!cardRaw.startsWith('527341') || cardRaw.length < 16) {
-        alert('Card number must start with 527341 and be 16 digits');
-        return;
-    }
-    if (password.length !== 6) {
-        alert('Password must be 6 digits');
-        return;
-    }
+    if (!cardRaw.startsWith("527341")) return alert("Nomor kartu harus diawali 527341");
+    if (password.length !== 6) return alert("Password harus 6 digit");
 
     await db.ref('users/' + cardRaw).set({
-        name: name || 'New User',
+        name: name || "User Baru",
         balance: 50000,
         password: password,
         cardClass: cardClass,
-        status: 'active',
+        status: "active",
         createdAt: Date.now()
     });
 
-    await db.ref('cards/' + cardRaw).set({ cardNumber: cardRaw });
+    await db.ref('cards/' + cardRaw).set({ nomor: cardRaw });
 
     hideModal();
-    alert('New card created successfully!');
+    alert("Kartu berhasil dibuat!");
     loadUsersTable();
 }
 
-// ==================== UPGRADE CLASS + AUTO MESSAGE ====================
+// ==================== UPGRADE CLASS ====================
 async function upgradeClass(cardKey) {
-    const classes = ['Standard','Preferred','Gold','Platinum','Signature','Elite'];
-    const current = (await db.ref('users/'+cardKey+'/cardClass').once('value')).val() || 'Standard';
-    const nextIndex = Math.min(classes.indexOf(current) + 1, classes.length - 1);
-    const newClass = classes[nextIndex];
-
-    await db.ref('users/'+cardKey).update({ cardClass: newClass });
-
-    // Send message to user
-    await db.ref('messages/' + cardKey).push({
-        from: 'Admin',
-        message: `Your card has been upgraded to ${newClass} class. Enjoy new benefits!`,
-        date: Date.now()
-    });
-
-    alert(`Card upgraded to ${newClass}`);
+    const newClass = prompt("Masukkan Card Class baru (Standard/Preferred/Gold/Platinum/Signature/Elite):");
+    if (!newClass) return;
+    
+    await db.ref('users/' + cardKey).update({ cardClass: newClass });
+    alert(`Card Class diubah menjadi ${newClass}`);
     loadUsersTable();
 }
 
 // ==================== FREEZE ACCOUNT ====================
 async function freezeAccount(cardKey) {
-    if (confirm('Freeze this account?')) {
-        await db.ref('users/'+cardKey).update({ status: 'frozen' });
+    if (confirm("Freeze akun ini?")) {
+        await db.ref('users/' + cardKey).update({ status: "frozen" });
         loadUsersTable();
     }
 }
 
-// ==================== OTHER FUNCTIONS (Transactions, Cards, etc.) ====================
+// ==================== TRANSACTIONS ====================
 async function loadTransactions() {
     const tbody = document.getElementById('tx-body');
     tbody.innerHTML = '';
-    // Load from Firebase (example structure)
-    // You can extend this with real transactions
-    const fakeTx = [
-        {id:'TX-928374', card:'527341 273853 4527', amount:250000, type:'Credit', date:'Mar 16 2026'},
-        {id:'TX-928373', card:'527341 123456 7890', amount:75000, type:'Debit', date:'Mar 16 2026'}
-    ];
-    fakeTx.forEach(tx => {
+
+    const snap = await db.ref('transactions').once('value');
+    snap.forEach(child => {
+        const tx = child.val();
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td class="py-5 px-6 font-mono">${tx.id}</td>
-                        <td class="py-5 px-6">${tx.card}</td>
-                        <td class="py-5 px-6 font-semibold">Rp ${tx.amount.toLocaleString('id-ID')}</td>
-                        <td class="py-5 px-6"><span class="\( {tx.type==='Credit'?'text-emerald-400':'text-orange-400'}"> \){tx.type}</span></td>
-                        <td class="py-5 px-6 text-zinc-400">${tx.date}</td>`;
+        tr.innerHTML = `
+            <td class="py-5 px-6 font-mono">${tx.id || child.key}</td>
+            <td class="py-5 px-6">${tx.card || '-'}</td>
+            <td class="py-5 px-6 font-semibold">Rp ${parseInt(tx.amount || 0).toLocaleString('id-ID')}</td>
+            <td class="py-5 px-6"><span class="\( {tx.type === 'credit' ? 'text-emerald-400' : 'text-orange-400'}"> \){tx.type || 'debit'}</span></td>
+            <td class="py-5 px-6 text-zinc-400">${new Date(tx.date || Date.now()).toLocaleDateString('id-ID')}</td>
+        `;
         tbody.appendChild(tr);
     });
 }
 
+// ==================== CARDS GRID ====================
 async function loadCardsGrid() {
-    // Similar to users, you can expand
-    document.getElementById('cards-grid').innerHTML = '<p class="text-center text-zinc-400">Card list loaded from Firebase (expandable)</p>';
+    const grid = document.getElementById('cards-grid');
+    grid.innerHTML = '';
+    const snap = await db.ref('cards').once('value');
+    snap.forEach(child => {
+        const card = child.val();
+        const div = document.createElement('div');
+        div.className = "bg-zinc-900 rounded-3xl p-6 text-center";
+        div.innerHTML = `<p class="font-mono text-lg">${card.nomor || child.key}</p>`;
+        grid.appendChild(div);
+    });
 }
 
-// ==================== MODALS & HELPERS ====================
+// ==================== SEND MESSAGE ====================
+function sendAdminMessage() {
+    const card = document.getElementById('msg-card').value.trim();
+    const text = document.getElementById('msg-text').value.trim();
+    if (!card || !text) return alert("Isi nomor kartu dan pesan");
+    
+    db.ref('messages/' + card).push({
+        from: "Admin",
+        message: text,
+        date: Date.now()
+    });
+    alert("Pesan berhasil dikirim ke user!");
+}
+
+// ==================== MODALS ====================
 function showCreateCardModal() {
     document.getElementById('create-modal').classList.remove('hidden');
-    document.getElementById('modal-card').focus();
 }
 
 function hideModal() {
     document.getElementById('create-modal').classList.add('hidden');
 }
 
-function sendMessage() {
-    alert('Secure message sent to user (stored in Firebase)');
-}
-
-async function logoutAdmin() {
-    if (confirm('Logout from Admin Panel?')) location.reload();
+function logoutAdmin() {
+    if (confirm("Keluar dari Admin Panel?")) location.href = "index.html";
 }
 
 // ==================== INIT ====================
 function initDashboard() {
-    // Fake live numbers (you can connect to real Firebase stats)
-    document.getElementById('stat-users').textContent = '12,847';
-    document.getElementById('stat-balance').textContent = 'Rp 87.4 M';
-    
-    // Load default page
     navigateTo('dashboard');
-    
-    // Auto refresh users every 15s
     setInterval(() => {
         if (!document.getElementById('page-users').classList.contains('hidden')) loadUsersTable();
     }, 15000);
 }
 
-// Start everything
-initDashboard();
+window.onload = initDashboard;
 </script>
 </body>
-</html>
+    </html>
