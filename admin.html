@@ -1,1 +1,76 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JamWallet - Admin</title>
+    <style>
+        body { margin:0; background:#001a00; color:white; font-family:Arial,sans-serif; padding:20px; }
+        input, button { padding:12px; margin:8px 0; font-size:16px; width:100%; max-width:400px; border-radius:8px; }
+        button { background:#00cc00; color:black; border:none; cursor:pointer; }
+        .card-item { background:rgba(255,255,255,0.1); padding:15px; margin:10px 0; border-radius:10px; }
+    </style>
+</head>
+<body>
+    <h1>Admin - Kelola Kartu ATM</h1>
 
+    <input type="text" id="new-card" placeholder="Nomor Kartu Baru">
+    <input type="number" id="new-saldo" placeholder="Saldo Awal" value="50000">
+    <button onclick="tambahKartu()">Tambah Kartu</button>
+
+    <h2>Daftar Kartu Terdaftar</h2>
+    <div id="card-list"></div>
+
+    <a href="login.html" style="color:#88ffaa;">← Kembali ke Login</a>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+    
+    <script>
+        const firebaseConfig = {
+          apiKey: "AIzaSyCs7Vnysf25BwhN2-fPTODd48xwzbPkbzI",
+          authDomain: "rhf-shop-mafia-8d2e5.firebaseapp.com",
+          databaseURL: "https://rhf-shop-mafia-8d2e5-default-rtdb.firebaseio.com",
+          projectId: "rhf-shop-mafia-8d2e5",
+          storageBucket: "rhf-shop-mafia-8d2e5.firebasestorage.app",
+          messagingSenderId: "158711184948",
+          appId: "1:158711184948:web:9223f07fa6658601189461",
+          measurementId: "G-R6KN1EYMB3"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        window.tambahKartu = async function() {
+            const cardNo = document.getElementById('new-card').value.trim();
+            const saldo = parseInt(document.getElementById('new-saldo').value) || 0;
+            if (!cardNo || cardNo.length < 8) return alert("Nomor kartu minimal 8 digit!");
+
+            const snap = await db.ref('cards/' + cardNo).once('value');
+            if (snap.exists()) return alert("Kartu sudah ada!");
+
+            await db.ref('cards/' + cardNo).set({nomor: cardNo, status: "aktif"});
+            await db.ref('users/' + cardNo).set({saldo: saldo});
+
+            alert("Kartu berhasil ditambahkan!");
+            loadCards();
+        };
+
+        function loadCards() {
+            db.ref('cards').once('value', snap => {
+                const el = document.getElementById('card-list');
+                el.innerHTML = '';
+                snap.forEach(child => {
+                    const d = document.createElement('div');
+                    d.className = 'card-item';
+                    d.innerHTML = `<strong>${child.val().nomor}</strong>`;
+                    el.appendChild(d);
+                });
+            });
+        }
+
+        loadCards();
+    </script>
+</body>
+</html>
