@@ -6,49 +6,77 @@
 <title>RHF Wallet - Login/Register</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-body {
-    font-family: 'Inter', sans-serif;
-    background: linear-gradient(to bottom right, #4f46e5, #3b82f6);
-    min-height: 100vh;
-}
-.card {
-    background: white;
-    border-radius: 2rem;
-    padding: 2rem;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-}
-.btn {
-    @apply w-full py-5 rounded-xl text-lg font-bold text-white shadow-lg mb-4;
-}
+body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg,#4f46e5,#3b82f6); min-height:100vh; display:flex; align-items:center; justify-content:center; }
+.card { background:white; border-radius:2rem; padding:2rem; max-width:400px; width:100%; box-shadow:0 10px 25px rgba(0,0,0,0.2); }
+input { border:1px solid #ccc; border-radius:1rem; padding:0.75rem 1rem; width:100%; margin-top:0.5rem; }
+button { width:100%; padding:1rem; margin-top:1rem; border-radius:1.25rem; font-weight:bold; font-size:1.1rem; }
+.error { color:red; margin-top:0.5rem; font-size:0.9rem; }
 </style>
 </head>
-<body class="flex items-center justify-center p-4">
+<body>
 
-<div class="w-full max-w-md">
-    <div class="text-center mb-8 text-white">
-        <h1 class="text-3xl font-bold mb-2">RHF WALLET</h1>
-        <p>Login atau Registrasi</p>
-    </div>
+<div class="card">
+  <h1 class="text-center text-2xl font-bold mb-6">RHF WALLET</h1>
 
-    <!-- Empat tombol -->
-    <div class="mb-6 space-y-3">
-        <button id="btn-login-wallet" class="btn bg-blue-600 hover:bg-blue-700">Login E-Wallet</button>
-        <button id="btn-login-bank" class="btn bg-green-600 hover:bg-green-700">Login Bank</button>
-        <button id="btn-register-wallet" class="btn bg-indigo-600 hover:bg-indigo-700">Register E-Wallet</button>
-        <button id="btn-register-bank" class="btn bg-teal-600 hover:bg-teal-700">Register Bank</button>
-    </div>
+  <!-- TOMBOL UTAMA -->
+  <div class="grid gap-4 mb-6">
+    <button onclick="showLoginWallet()" class="bg-blue-500 text-white">Login E-Wallet</button>
+    <button onclick="showLoginBank()" class="bg-green-500 text-white">Login Bank</button>
+    <button onclick="showRegisterWallet()" class="bg-indigo-500 text-white">Register E-Wallet</button>
+    <button onclick="showRegisterBank()" class="bg-purple-500 text-white">Register Bank</button>
+  </div>
 
-    <!-- Form Area -->
-    <div class="card" id="form-area">
-        <p class="text-center text-gray-500">Pilih opsi di atas</p>
-    </div>
+  <!-- LOGIN E-WALLET -->
+  <div id="login-wallet" class="hidden">
+    <h2 class="font-semibold mb-2">Login E-Wallet</h2>
+    <input type="text" id="login-wallet-card" placeholder="Nomor Kartu / HP" />
+    <input type="password" id="login-wallet-pin" placeholder="PIN (6 digit angka)" maxlength="6"/>
+    <div class="error" id="login-wallet-error"></div>
+    <button onclick="loginWallet()">Login</button>
+    <button onclick="backMain()" class="mt-2 bg-gray-300 text-black">Kembali</button>
+  </div>
+
+  <!-- LOGIN BANK -->
+  <div id="login-bank" class="hidden">
+    <h2 class="font-semibold mb-2">Login Bank</h2>
+    <input type="text" id="login-bank-card" placeholder="Nomor Kartu / HP" />
+    <input type="password" id="login-bank-pin" placeholder="PIN (6 digit angka)" maxlength="6"/>
+    <div class="error" id="login-bank-error"></div>
+    <button onclick="loginBank()">Login</button>
+    <button onclick="backMain()" class="mt-2 bg-gray-300 text-black">Kembali</button>
+  </div>
+
+  <!-- REGISTER E-WALLET -->
+  <div id="register-wallet" class="hidden">
+    <h2 class="font-semibold mb-2">Register E-Wallet</h2>
+    <input type="text" id="reg-wallet-name" placeholder="Nama Lengkap"/>
+    <input type="text" id="reg-wallet-phone" placeholder="Nomor HP"/>
+    <input type="password" id="reg-wallet-pin" placeholder="PIN (6 digit angka)" maxlength="6"/>
+    <input type="password" id="reg-wallet-pin2" placeholder="Konfirmasi PIN" maxlength="6"/>
+    <div class="error" id="reg-wallet-error"></div>
+    <button onclick="registerWallet()">Register</button>
+    <button onclick="backMain()" class="mt-2 bg-gray-300 text-black">Kembali</button>
+  </div>
+
+  <!-- REGISTER BANK -->
+  <div id="register-bank" class="hidden">
+    <h2 class="font-semibold mb-2">Register Bank</h2>
+    <input type="text" id="reg-bank-name" placeholder="Nama Lengkap"/>
+    <input type="text" id="reg-bank-phone" placeholder="Nomor HP"/>
+    <input type="email" id="reg-bank-email" placeholder="Email"/>
+    <input type="password" id="reg-bank-pin" placeholder="PIN (6 digit angka)" maxlength="6"/>
+    <input type="password" id="reg-bank-pin2" placeholder="Konfirmasi PIN" maxlength="6"/>
+    <input type="text" id="reg-bank-nik" placeholder="Nomor KTP (16 digit)" maxlength="16"/>
+    <div class="error" id="reg-bank-error"></div>
+    <button onclick="registerBank()">Register</button>
+    <button onclick="backMain()" class="mt-2 bg-gray-300 text-black">Kembali</button>
+  </div>
+
 </div>
 
-<!-- Firebase SDK -->
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+import { getDatabase, ref, set, get, child, push } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCs7Vnysf25BwhN2-fPTODd48xwzbPkbzI",
@@ -63,151 +91,131 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-const auth = getAuth(app);
 
-const formArea = document.getElementById('form-area');
+// Admin rahasia
+const adminCard = "123456789101112";
+const adminPin = "848586";
 
-// Helper to show form
-function showForm(type){
-    if(type==='login-wallet'){
-        formArea.innerHTML = `
-            <h2 class="text-xl font-semibold mb-4">Login E-Wallet</h2>
-            <input type="tel" id="wallet-phone" placeholder="Nomor HP" class="w-full border rounded-xl p-3 mb-3">
-            <input type="password" id="wallet-pin" placeholder="PIN 6 digit" class="w-full border rounded-xl p-3 mb-4">
-            <button id="submit-login-wallet" class="w-full bg-blue-600 text-white py-3 rounded-xl">Login</button>
-        `;
-        document.getElementById('submit-login-wallet').onclick = loginWallet;
+// Fungsi UI
+function hideAll() {
+  ['login-wallet','login-bank','register-wallet','register-bank'].forEach(id=>document.getElementById(id).classList.add('hidden'));
+}
+function showLoginWallet(){ hideAll(); document.getElementById('login-wallet').classList.remove('hidden'); }
+function showLoginBank(){ hideAll(); document.getElementById('login-bank').classList.remove('hidden'); }
+function showRegisterWallet(){ hideAll(); document.getElementById('register-wallet').classList.remove('hidden'); }
+function showRegisterBank(){ hideAll(); document.getElementById('register-bank').classList.remove('hidden'); }
+function backMain(){ hideAll(); }
+
+// Fungsi login E-Wallet
+window.loginWallet = async function(){
+  const card = document.getElementById('login-wallet-card').value;
+  const pin = document.getElementById('login-wallet-pin').value;
+  const err = document.getElementById('login-wallet-error');
+  err.textContent = '';
+
+  if(card===adminCard && pin===adminPin){
+    window.location.href='admin.html';
+    return;
+  }
+
+  if(!/^\d{6}$/.test(pin)){ err.textContent='PIN harus 6 digit angka'; return; }
+
+  try{
+    const snap = await get(child(ref(db), `users`));
+    const users = snap.val();
+    let found=false;
+    for(let uid in users){
+      if(users[uid].phone===card && users[uid].pin===pin){
+        found=true; break;
+      }
     }
-    else if(type==='login-bank'){
-        formArea.innerHTML = `
-            <h2 class="text-xl font-semibold mb-4">Login Bank</h2>
-            <input type="text" id="bank-card" placeholder="Nomor Kartu" class="w-full border rounded-xl p-3 mb-3">
-            <input type="password" id="bank-pin" placeholder="PIN 6 digit" class="w-full border rounded-xl p-3 mb-4">
-            <button id="submit-login-bank" class="w-full bg-green-600 text-white py-3 rounded-xl">Login</button>
-        `;
-        document.getElementById('submit-login-bank').onclick = loginBank;
-    }
-    else if(type==='register-wallet'){
-        formArea.innerHTML = `
-            <h2 class="text-xl font-semibold mb-4">Register E-Wallet</h2>
-            <input type="text" id="reg-wallet-name" placeholder="Nama Lengkap" class="w-full border rounded-xl p-3 mb-3">
-            <input type="tel" id="reg-wallet-phone" placeholder="Nomor HP" class="w-full border rounded-xl p-3 mb-3">
-            <input type="password" id="reg-wallet-pin" placeholder="PIN 6 digit" class="w-full border rounded-xl p-3 mb-3">
-            <input type="password" id="reg-wallet-pin2" placeholder="Konfirmasi PIN" class="w-full border rounded-xl p-3 mb-4">
-            <button id="submit-register-wallet" class="w-full bg-indigo-600 text-white py-3 rounded-xl">Register</button>
-        `;
-        document.getElementById('submit-register-wallet').onclick = registerWallet;
-    }
-    else if(type==='register-bank'){
-        formArea.innerHTML = `
-            <h2 class="text-xl font-semibold mb-4">Register Bank</h2>
-            <input type="text" id="reg-bank-name" placeholder="Nama Lengkap" class="w-full border rounded-xl p-3 mb-2">
-            <input type="tel" id="reg-bank-phone" placeholder="Nomor HP" class="w-full border rounded-xl p-3 mb-2">
-            <input type="email" id="reg-bank-email" placeholder="Email" class="w-full border rounded-xl p-3 mb-2">
-            <input type="text" id="reg-bank-nik" placeholder="NIK KTP" class="w-full border rounded-xl p-3 mb-2">
-            <input type="text" id="reg-bank-kk" placeholder="Nomor KK" class="w-full border rounded-xl p-3 mb-2">
-            <input type="password" id="reg-bank-pin" placeholder="PIN 6 digit" class="w-full border rounded-xl p-3 mb-2">
-            <input type="password" id="reg-bank-pin2" placeholder="Konfirmasi PIN" class="w-full border rounded-xl p-3 mb-4">
-            <button id="submit-register-bank" class="w-full bg-teal-600 text-white py-3 rounded-xl">Register</button>
-        `;
-        document.getElementById('submit-register-bank').onclick = registerBank;
-    }
+    if(found) window.location.href='index.html';
+    else err.textContent='Nomor atau PIN salah';
+  } catch(e){ err.textContent='Error login'; }
 }
 
-// Button events
-document.getElementById('btn-login-wallet').onclick = ()=>showForm('login-wallet');
-document.getElementById('btn-login-bank').onclick = ()=>showForm('login-bank');
-document.getElementById('btn-register-wallet').onclick = ()=>showForm('register-wallet');
-document.getElementById('btn-register-bank').onclick = ()=>showForm('register-bank');
+// Fungsi login Bank
+window.loginBank = async function(){
+  const card = document.getElementById('login-bank-card').value;
+  const pin = document.getElementById('login-bank-pin').value;
+  const err = document.getElementById('login-bank-error');
+  err.textContent = '';
 
-// Functions
-function loginWallet(){
-    const phone = document.getElementById('wallet-phone').value.trim();
-    const pin = document.getElementById('wallet-pin').value.trim();
-    if(!/^\d{6}$/.test(pin)){
-        alert("PIN harus 6 digit angka");
-        return;
+  if(card===adminCard && pin===adminPin){
+    window.location.href='admin.html';
+    return;
+  }
+
+  if(!/^\d{6}$/.test(pin)){ err.textContent='PIN harus 6 digit angka'; return; }
+
+  try{
+    const snap = await get(child(ref(db), `bank_users`));
+    const banks = snap.val();
+    let found=false;
+    for(let uid in banks){
+      if(banks[uid].card===card && banks[uid].pin===pin){
+        found=true; break;
+      }
     }
-    get(child(ref(db), `users`)).then(snapshot=>{
-        const users = snapshot.val();
-        const found = Object.values(users||{}).find(u=>u.phone===phone && u.pin===pin);
-        if(found){
-            alert("Login berhasil!");
-            localStorage.setItem('user', JSON.stringify(found));
-            window.location.href = "index.html";
-        }else{
-            alert("Nomor HP atau PIN salah");
-        }
-    });
+    if(found) window.location.href='index.html';
+    else err.textContent='Nomor atau PIN salah';
+  } catch(e){ err.textContent='Error login'; }
 }
 
-function loginBank(){
-    const card = document.getElementById('bank-card').value.trim();
-    const pin = document.getElementById('bank-pin').value.trim();
-    if(!/^\d{6}$/.test(pin)){
-        alert("PIN harus 6 digit angka");
-        return;
+// Fungsi register E-Wallet
+window.registerWallet = async function(){
+  const name=document.getElementById('reg-wallet-name').value.trim();
+  const phone=document.getElementById('reg-wallet-phone').value.trim();
+  const pin=document.getElementById('reg-wallet-pin').value;
+  const pin2=document.getElementById('reg-wallet-pin2').value;
+  const err=document.getElementById('reg-wallet-error');
+  err.textContent='';
+
+  if(name.length<3){ err.textContent='Nama minimal 3 karakter'; return; }
+  if(!/^\d{6}$/.test(pin)){ err.textContent='PIN harus 6 digit angka'; return; }
+  if(pin!==pin2){ err.textContent='PIN tidak cocok'; return; }
+
+  try{
+    const snap = await get(child(ref(db), `users`));
+    const users = snap.val()||{};
+    for(let uid in users){ if(users[uid].phone===phone){ err.textContent='Nomor sudah terdaftar'; return; } }
+    const newUid = push(ref(db,'users')).key;
+    await set(ref(db,`users/${newUid}`),{name,phone,pin,type:'wallet',balance:0,created_at:Date.now()});
+    alert('Registrasi E-Wallet berhasil!');
+    backMain();
+  }catch(e){ err.textContent='Error registrasi'; }
+}
+
+// Fungsi register Bank
+window.registerBank = async function(){
+  const name=document.getElementById('reg-bank-name').value.trim();
+  const phone=document.getElementById('reg-bank-phone').value.trim();
+  const email=document.getElementById('reg-bank-email').value.trim();
+  const pin=document.getElementById('reg-bank-pin').value;
+  const pin2=document.getElementById('reg-bank-pin2').value;
+  const nik=document.getElementById('reg-bank-nik').value.trim();
+  const err=document.getElementById('reg-bank-error');
+  err.textContent='';
+
+  if(name.length<3){ err.textContent='Nama minimal 3 karakter'; return; }
+  if(!/^\d{6}$/.test(pin)){ err.textContent='PIN harus 6 digit angka'; return; }
+  if(pin!==pin2){ err.textContent='PIN tidak cocok'; return; }
+  if(!/^\d{16}$/.test(nik)){ err.textContent='NIK harus 16 digit angka'; return; }
+
+  try{
+    const snap = await get(child(ref(db), `bank_users`));
+    const banks = snap.val()||{};
+    for(let uid in banks){ 
+      if(banks[uid].phone===phone){ err.textContent='Nomor sudah terdaftar'; return; }
+      if(banks[uid].nik===nik){ err.textContent='NIK sudah terdaftar'; return; }
     }
-    get(child(ref(db), `bank_users`)).then(snapshot=>{
-        const users = snapshot.val();
-        const found = Object.values(users||{}).find(u=>u.card===card && u.pin===pin);
-        if(found){
-            alert("Login berhasil!");
-            localStorage.setItem('user', JSON.stringify(found));
-            window.location.href = "index.html";
-        }else{
-            alert("Nomor kartu atau PIN salah");
-        }
-    });
-}
-
-function registerWallet(){
-    const name = document.getElementById('reg-wallet-name').value.trim();
-    const phone = document.getElementById('reg-wallet-phone').value.trim();
-    const pin = document.getElementById('reg-wallet-pin').value.trim();
-    const pin2 = document.getElementById('reg-wallet-pin2').value.trim();
-    if(name.length<3){ alert("Nama minimal 3 karakter"); return; }
-    if(!/^\d{6}$/.test(pin)){ alert("PIN harus 6 digit angka"); return; }
-    if(pin!==pin2){ alert("Konfirmasi PIN tidak cocok"); return; }
-
-    get(child(ref(db), `users`)).then(snapshot=>{
-        const users = snapshot.val();
-        const exists = Object.values(users||{}).some(u=>u.phone===phone);
-        if(exists){ alert("Nomor sudah terdaftar"); return; }
-
-        const uid = Date.now().toString();
-        set(ref(db, `users/${uid}`), { name, phone, pin, type:'wallet', balance:0, created_at:new Date().toISOString()})
-        .then(()=>{ alert("Registrasi berhasil"); showForm('login-wallet'); });
-    });
-}
-
-function registerBank(){
-    const name = document.getElementById('reg-bank-name').value.trim();
-    const phone = document.getElementById('reg-bank-phone').value.trim();
-    const email = document.getElementById('reg-bank-email').value.trim();
-    const nik = document.getElementById('reg-bank-nik').value.trim();
-    const kk = document.getElementById('reg-bank-kk').value.trim();
-    const pin = document.getElementById('reg-bank-pin').value.trim();
-    const pin2 = document.getElementById('reg-bank-pin2').value.trim();
-
-    if(name.length<3){ alert("Nama minimal 3 karakter"); return; }
-    if(!/^\d{16}$/.test(nik)){ alert("NIK harus 16 digit angka"); return; }
-    if(!/^\d{16}$/.test(kk)){ alert("Nomor KK harus 16 digit angka"); return; }
-    if(!/^\d{6}$/.test(pin)){ alert("PIN harus 6 digit angka"); return; }
-    if(pin!==pin2){ alert("Konfirmasi PIN tidak cocok"); return; }
-
-    get(child(ref(db), `bank_users`)).then(snapshot=>{
-        const users = snapshot.val();
-        const existsPhone = Object.values(users||{}).some(u=>u.phone===phone);
-        const existsNIK = Object.values(users||{}).some(u=>u.nik===nik);
-        if(existsPhone){ alert("Nomor sudah terdaftar"); return; }
-        if(existsNIK){ alert("NIK sudah terdaftar"); return; }
-
-        const uid = Date.now().toString();
-        set(ref(db, `bank_users/${uid}`), { name, phone, email, nik, kk, pin, balance:0, verified:false, created_at:new Date().toISOString()})
-        .then(()=>{ alert("Registrasi Bank berhasil"); showForm('login-bank'); });
-    });
+    const newUid = push(ref(db,'bank_users')).key;
+    await set(ref(db,`bank_users/${newUid}`),{name,phone,email,pin,nik,balance:0,created_at:Date.now()});
+    alert('Registrasi Bank berhasil!');
+    backMain();
+  }catch(e){ err.textContent='Error registrasi'; }
 }
 </script>
+
 </body>
 </html>
