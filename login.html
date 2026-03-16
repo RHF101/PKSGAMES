@@ -3,116 +3,271 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JamWallet - Login</title>
-    <link rel="manifest" href="manifest.json">
+    <title>RHF Wallet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        body {
-            margin: 0; padding: 0;
-            background: linear-gradient(135deg, #001a00, #003300);
-            color: white;
-            font-family: Arial, sans-serif;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .container {
-            background: rgba(0, 51, 0, 0.95);
-            padding: 40px 30px;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 380px;
-            text-align: center;
-            box-shadow: 0 10px 40px rgba(0, 255, 80, 0.25);
-        }
-        h1 { margin: 0 0 8px; font-size: 32px; color: #00ff88; letter-spacing: 2px; }
-        p { margin: 0 0 30px; opacity: 0.9; font-size: 15px; }
-        input {
-            width: 100%;
-            padding: 16px;
-            margin: 12px 0;
-            border: none;
-            border-radius: 12px;
-            font-size: 18px;
-            background: #002200;
-            color: white;
-            text-align: center;
-            letter-spacing: 3px;
-        }
-        button {
-            width: 100%;
-            padding: 16px;
-            margin-top: 10px;
-            background: #00cc00;
-            color: black;
-            font-weight: bold;
-            font-size: 18px;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-        }
-        .link { color: #88ffaa; margin-top: 25px; display: block; font-size: 15px; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .balance-amount { font-size: 2.8rem; font-weight: 700; letter-spacing: -1px; }
+        .icon-card { transition: all 0.3s ease; }
+        .icon-card:hover { transform: translateY(-8px); box-shadow: 0 10px 25px rgba(0, 123, 255, 0.15); }
+        .nav-bottom { box-shadow: 0 -2px 10px rgba(0,0,0,0.1); }
     </style>
 </head>
-<body>
-    <div class="container">
-        <h1>JamWallet</h1>
-        <p>Masukkan Nomor Kartu & Password</p>
-        
-        <input type="text" id="card" placeholder="527341 123456 7890" maxlength="25" onkeyup="formatCard(this)">
-        <input type="password" id="pass" placeholder="Password 6 Digit" maxlength="6">
-        
-        <button onclick="login()">MASUK</button>
-        <a href="admin.html" class="link">Admin Panel</a>
+<body class="bg-zinc-50 min-h-screen pb-20">
+
+    <!-- HEADER -->
+    <div class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white pt-12 pb-8 px-6">
+        <div class="flex justify-between items-center mb-6">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-white text-blue-600 rounded-2xl flex items-center justify-center font-bold text-2xl">R</div>
+                <div>
+                    <h1 class="text-2xl font-semibold">RHF Wallet</h1>
+                    <p class="text-blue-100 text-sm">Selamat datang kembali</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <i onclick="toggleBalance()" id="eye-icon" class="fas fa-eye text-2xl cursor-pointer"></i>
+                <div class="w-9 h-9 bg-white/30 rounded-2xl flex items-center justify-center text-xl">👤</div>
+            </div>
+        </div>
+
+        <!-- BALANCE CARD -->
+        <div class="bg-white/10 backdrop-blur-xl rounded-3xl p-6 shadow-xl">
+            <div class="flex justify-between items-start">
+                <div>
+                    <p class="text-blue-100 text-sm mb-1">Saldo Kamu</p>
+                    <div id="balance" class="balance-amount text-white">Rp 2.450.000</div>
+                    <p id="balance-hidden" class="hidden text-4xl text-white/30 font-light tracking-widest">••••••••</p>
+                </div>
+                <div class="text-right">
+                    <div class="bg-white/20 text-xs px-4 py-1 rounded-2xl inline-block">Standard</div>
+                    <p class="text-xs text-blue-100 mt-6">RHF-987654321</p>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+    <!-- QUICK ACTIONS GRID -->
+    <div class="px-6 -mt-6 relative z-10">
+        <div class="grid grid-cols-4 gap-4">
+            <div onclick="showSendModal()" class="icon-card bg-white rounded-3xl p-4 text-center shadow">
+                <div class="w-14 h-14 mx-auto bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-3xl mb-2">
+                    <i class="fas fa-paper-plane"></i>
+                </div>
+                <p class="text-xs font-medium text-zinc-700">Kirim</p>
+            </div>
+            <div onclick="alert('Fitur Request Money akan segera hadir')" class="icon-card bg-white rounded-3xl p-4 text-center shadow">
+                <div class="w-14 h-14 mx-auto bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-3xl mb-2">
+                    <i class="fas fa-hand-holding-dollar"></i>
+                </div>
+                <p class="text-xs font-medium text-zinc-700">Minta</p>
+            </div>
+            <div onclick="showQRModal()" class="icon-card bg-white rounded-3xl p-4 text-center shadow">
+                <div class="w-14 h-14 mx-auto bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center text-3xl mb-2">
+                    <i class="fas fa-qrcode"></i>
+                </div>
+                <p class="text-xs font-medium text-zinc-700">QRIS</p>
+            </div>
+            <div onclick="alert('Scan QR akan menggunakan kamera')" class="icon-card bg-white rounded-3xl p-4 text-center shadow">
+                <div class="w-14 h-14 mx-auto bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center text-3xl mb-2">
+                    <i class="fas fa-camera"></i>
+                </div>
+                <p class="text-xs font-medium text-zinc-700">Scan</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MORE FEATURES -->
+    <div class="px-6 mt-10">
+        <h3 class="text-zinc-500 font-medium text-sm mb-4 px-2">Layanan Lainnya</h3>
+        <div class="grid grid-cols-4 gap-4">
+            <div onclick="topUp()" class="icon-card bg-white rounded-3xl p-5 text-center shadow">
+                <i class="fas fa-plus-circle text-3xl text-blue-500 mb-2"></i>
+                <p class="text-xs">Top Up</p>
+            </div>
+            <div onclick="alert('Riwayat Transaksi dibuka')" class="icon-card bg-white rounded-3xl p-5 text-center shadow">
+                <i class="fas fa-history text-3xl text-violet-500 mb-2"></i>
+                <p class="text-xs">Riwayat</p>
+            </div>
+            <div onclick="alert('Bayar Tagihan')" class="icon-card bg-white rounded-3xl p-5 text-center shadow">
+                <i class="fas fa-file-invoice text-3xl text-orange-500 mb-2"></i>
+                <p class="text-xs">Tagihan</p>
+            </div>
+            <div onclick="alert('Transfer ke Bank')" class="icon-card bg-white rounded-3xl p-5 text-center shadow">
+                <i class="fas fa-bank text-3xl text-teal-500 mb-2"></i>
+                <p class="text-xs">Transfer</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- TRANSACTION HISTORY -->
+    <div class="px-6 mt-12">
+        <div class="flex justify-between items-center mb-4 px-2">
+            <h3 class="font-semibold text-zinc-700">Riwayat Transaksi</h3>
+            <span onclick="alert('Semua riwayat dibuka')" class="text-blue-600 text-sm font-medium cursor-pointer">Lihat Semua →</span>
+        </div>
+        
+        <div id="history-list" class="space-y-3">
+            <!-- JS akan isi otomatis -->
+        </div>
+    </div>
+
+    <!-- BOTTOM NAVIGATION -->
+    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-zinc-200 nav-bottom">
+        <div class="flex justify-around items-center py-3">
+            <div class="flex flex-col items-center text-blue-600">
+                <i class="fas fa-wallet text-2xl"></i>
+                <span class="text-xs mt-1">Home</span>
+            </div>
+            <div onclick="showSendModal()" class="flex flex-col items-center text-zinc-400 hover:text-zinc-600">
+                <i class="fas fa-paper-plane text-2xl"></i>
+                <span class="text-xs mt-1">Kirim</span>
+            </div>
+            <div onclick="showQRModal()" class="flex flex-col items-center text-zinc-400 hover:text-zinc-600">
+                <i class="fas fa-qrcode text-2xl"></i>
+                <span class="text-xs mt-1">QRIS</span>
+            </div>
+            <div onclick="alert('Profil dibuka')" class="flex flex-col items-center text-zinc-400 hover:text-zinc-600">
+                <i class="fas fa-user text-2xl"></i>
+                <span class="text-xs mt-1">Saya</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- SEND MONEY MODAL -->
+    <div id="send-modal" class="hidden fixed inset-0 bg-black/70 flex items-end">
+        <div class="bg-white w-full rounded-t-3xl p-6">
+            <div class="flex justify-between mb-6">
+                <h3 class="text-2xl font-semibold">Kirim Uang</h3>
+                <button onclick="hideSendModal()" class="text-3xl text-zinc-400">×</button>
+            </div>
+            
+            <input id="recipient" type="text" placeholder="Nomor HP atau Nomor Rekening" 
+                   class="w-full border border-zinc-300 rounded-2xl px-5 py-4 text-lg mb-4">
+            
+            <div class="relative">
+                <span class="absolute left-5 top-4 text-zinc-400">Rp</span>
+                <input id="amount" type="number" placeholder="0" 
+                       class="w-full border border-zinc-300 rounded-2xl px-12 py-4 text-3xl font-semibold">
+            </div>
+
+            <button onclick="sendMoney()" 
+                    class="mt-8 w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl text-lg font-semibold">
+                Kirim Sekarang
+            </button>
+        </div>
+    </div>
+
+    <!-- QR MODAL -->
+    <div id="qr-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center">
+        <div class="bg-white rounded-3xl p-8 w-full max-w-xs text-center">
+            <h3 class="text-xl font-semibold mb-6">QRIS RHF Wallet</h3>
+            <div class="bg-zinc-100 border-2 border-dashed border-zinc-300 w-64 h-64 mx-auto rounded-2xl flex items-center justify-center text-8xl mb-6">
+                📱
+            </div>
+            <p class="text-sm text-zinc-500">Scan QR ini untuk menerima pembayaran</p>
+            <button onclick="hideQRModal()" 
+                    class="mt-8 w-full py-3 border border-zinc-300 rounded-2xl">Tutup</button>
+        </div>
+    </div>
+
+<script>
+// Tailwind script
+function init() {
+    renderHistory();
+}
+
+let balanceVisible = true;
+const balanceAmount = 2450000;
+
+function toggleBalance() {
+    balanceVisible = !balanceVisible;
+    const bal = document.getElementById('balance');
+    const hidden = document.getElementById('balance-hidden');
+    const icon = document.getElementById('eye-icon');
     
-    <script>
-        const firebaseConfig = {
-          apiKey: "AIzaSyCs7Vnysf25BwhN2-fPTODd48xwzbPkbzI",
-          authDomain: "rhf-shop-mafia-8d2e5.firebaseapp.com",
-          databaseURL: "https://rhf-shop-mafia-8d2e5-default-rtdb.firebaseio.com",
-          projectId: "rhf-shop-mafia-8d2e5",
-          storageBucket: "rhf-shop-mafia-8d2e5.firebasestorage.app",
-          messagingSenderId: "158711184948",
-          appId: "1:158711184948:web:9223f07fa6658601189461",
-          measurementId: "G-R6KN1EYMB3"
-        };
+    if (balanceVisible) {
+        bal.classList.remove('hidden');
+        hidden.classList.add('hidden');
+        icon.classList.replace('fa-eye-slash', 'fa-eye');
+        bal.textContent = 'Rp ' + balanceAmount.toLocaleString('id-ID');
+    } else {
+        bal.classList.add('hidden');
+        hidden.classList.remove('hidden');
+        icon.classList.replace('fa-eye', 'fa-eye-slash');
+    }
+}
 
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
+function renderHistory() {
+    const transactions = [
+        { date: "16 Mar 2026", desc: "Transfer ke Budi Santoso", amount: -150000, status: "Berhasil" },
+        { date: "15 Mar 2026", desc: "Top Up via BCA", amount: 500000, status: "Berhasil" },
+        { date: "14 Mar 2026", desc: "Bayar GoFood", amount: -45000, status: "Berhasil" },
+        { date: "13 Mar 2026", desc: "Terima dari Sinta", amount: 200000, status: "Berhasil" }
+    ];
 
-        // Format nomor kartu otomatis dengan spasi (6-6-4)
-        window.formatCard = function(input) {
-            let val = input.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-            let formatted = '';
-            if (val.length > 0) formatted += val.substring(0,6);
-            if (val.length > 6) formatted += ' ' + val.substring(6,12);
-            if (val.length > 12) formatted += ' ' + val.substring(12,16);
-            input.value = formatted.trim();
-        };
+    let html = '';
+    transactions.forEach(t => {
+        html += `
+            <div class="bg-white rounded-3xl p-5 flex justify-between items-center shadow-sm">
+                <div>
+                    <p class="font-medium text-zinc-700">${t.desc}</p>
+                    <p class="text-xs text-zinc-400">${t.date}</p>
+                </div>
+                <div class="text-right">
+                    <p class="${t.amount > 0 ? 'text-emerald-600' : 'text-red-500'} font-semibold">
+                        ${t.amount > 0 ? '+' : ''}Rp ${Math.abs(t.amount).toLocaleString('id-ID')}
+                    </p>
+                    <p class="text-xs text-emerald-500">${t.status}</p>
+                </div>
+            </div>`;
+    });
+    document.getElementById('history-list').innerHTML = html;
+}
 
-        window.login = async function() {
-            let cardFormatted = document.getElementById('card').value.trim();
-            let card = cardFormatted.replace(/\s+/g, ''); // hapus spasi untuk simpan di DB
-            let pass = document.getElementById('pass').value.trim();
+// Modals
+function showSendModal() {
+    document.getElementById('send-modal').classList.remove('hidden');
+    document.getElementById('recipient').focus();
+}
 
-            if (!card.startsWith("527341")) return alert("Nomor kartu harus diawali 527341");
-            if (pass.length !== 6) return alert("Password harus 6 digit angka");
+function hideSendModal() {
+    document.getElementById('send-modal').classList.add('hidden');
+}
 
-            const snap = await db.ref('users/' + card).once('value');
-            const user = snap.val();
+function sendMoney() {
+    const amount = document.getElementById('amount').value;
+    if (!amount || amount <= 0) {
+        alert("Masukkan nominal yang valid!");
+        return;
+    }
+    alert(`Transfer Rp ${parseInt(amount).toLocaleString('id-ID')} berhasil dikirim!`);
+    hideSendModal();
+    // Reset input
+    document.getElementById('amount').value = '';
+    document.getElementById('recipient').value = '';
+}
 
-            if (!user || user.password !== pass) {
-                return alert("Nomor kartu atau password salah!");
-            }
+function showQRModal() {
+    document.getElementById('qr-modal').classList.remove('hidden');
+}
 
-            localStorage.setItem('currentCard', card);
-            window.location.href = "index.html";
-        };
-    </script>
+function hideQRModal() {
+    document.getElementById('qr-modal').classList.add('hidden');
+}
+
+function topUp() {
+    const nominal = prompt("Masukkan nominal Top Up (Rp):", "100000");
+    if (nominal) {
+        alert(`Top Up Rp ${parseInt(nominal).toLocaleString('id-ID')} berhasil!`);
+    }
+}
+
+// Initialize
+window.onload = init;
+</script>
+
 </body>
-</html>
+                    </html>
